@@ -1,0 +1,749 @@
+Current runner version: '2.337.0'
+##[group]Runner Image Provisioner
+Hosted Compute Agent
+Version: 20260901.588
+Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+Build Date: 2026-09-01T19:56:44Z
+Worker ID: {a9e8ae05-7136-449c-a29a-f963bfdd9437}
+Azure Region: eastus
+##[endgroup]
+##[group]Operating System
+Ubuntu
+24.04.5
+LTS
+##[endgroup]
+##[group]Runner Image
+Image: ubuntu-24.04
+Version: 20260927.320.1
+Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+##[endgroup]
+##[group]GITHUB_TOKEN Permissions
+Contents: read
+Metadata: read
+##[endgroup]
+Secret source: Actions
+Cache mode: write
+Prepare workflow directory
+Prepare all required actions
+Getting action download info
+Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Download action repository 'actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97' (SHA:5fda3b95a4ea91299a34e894583c3862153e4b97)
+Download action repository 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a' (SHA:043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
+Complete job name: DAST (ZAP passivo em homologação efêmera)
+##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+with:
+  repository: yohanngusso/consultas-api-dr2-at
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+env:
+  PYTHON_VERSION: 3.14
+  CLINICA_DATABASE_URL: sqlite:///./homologacao.db
+  CLINICA_CARREGAR_DADOS_DEMONSTRACAO: true
+  CLINICA_COOKIE_SEGURO: false
+  CLINICA_CORS_ORIGENS: https://app.clinicas.exemplo.dev
+##[endgroup]
+Syncing repository: yohanngusso/consultas-api-dr2-at
+##[group]Getting Git version info
+Working directory is '/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at'
+[command]/usr/bin/git version
+git version 2.55.0
+##[endgroup]
+Temporarily overriding HOME='/home/runner/work/_temp/78d97932-95ea-4c85-a968-ce5c3aa66826' before making global git config changes
+Adding repository directory to the temporary git global config as a safe directory
+[command]/usr/bin/git config --global --add safe.directory /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at
+Deleting the contents of '/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at'
+##[group]Determining repository object format
+##[endgroup]
+##[group]Initializing the repository
+[command]/usr/bin/git init /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: will change to "main" in Git 3.0. To configure the initial branch name
+hint: to use in all of your new repositories, which will suppress this warning,
+hint: call:
+hint:
+hint: 	git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint: 	git branch -m <name>
+hint:
+hint: Disable this message with "git config set advice.defaultBranchName false"
+Initialized empty Git repository in /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git/
+[command]/usr/bin/git remote add origin https://github.com/yohanngusso/consultas-api-dr2-at
+##[endgroup]
+##[group]Disabling automatic garbage collection
+[command]/usr/bin/git config --local gc.auto 0
+##[endgroup]
+##[group]Setting up auth
+Removing SSH command configuration
+[command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+[command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Removing HTTP extra header
+[command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+[command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Removing includeIf entries pointing to credentials config files
+[command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+[command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+[command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-09a15476-7b86-49ae-a2b0-50eba908c9e7.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+[command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git.path /home/runner/work/_temp/git-credentials-09a15476-7b86-49ae-a2b0-50eba908c9e7.config
+[command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-09a15476-7b86-49ae-a2b0-50eba908c9e7.config
+[command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-09a15476-7b86-49ae-a2b0-50eba908c9e7.config
+[command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-09a15476-7b86-49ae-a2b0-50eba908c9e7.config
+##[endgroup]
+##[group]Fetching the repository
+[command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +20fe4a257332493bf9b691e9a0ff66f8d3a0ee8b:refs/remotes/origin/main
+From https://github.com/yohanngusso/consultas-api-dr2-at
+ * [new ref]         20fe4a257332493bf9b691e9a0ff66f8d3a0ee8b -> origin/main
+[command]/usr/bin/git branch --list --remote origin/main
+  origin/main
+[command]/usr/bin/git rev-parse refs/remotes/origin/main
+20fe4a257332493bf9b691e9a0ff66f8d3a0ee8b
+##[endgroup]
+##[group]Determining the checkout info
+##[endgroup]
+[command]/usr/bin/git sparse-checkout disable
+[command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+##[group]Checking out the ref
+[command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+##[endgroup]
+[command]/usr/bin/git log -1 --format=%H
+20fe4a257332493bf9b691e9a0ff66f8d3a0ee8b
+##[group]Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+with:
+  python-version: 3.14
+  cache: pip
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+env:
+  PYTHON_VERSION: 3.14
+  CLINICA_DATABASE_URL: sqlite:///./homologacao.db
+  CLINICA_CARREGAR_DADOS_DEMONSTRACAO: true
+  CLINICA_COOKIE_SEGURO: false
+  CLINICA_CORS_ORIGENS: https://app.clinicas.exemplo.dev
+##[endgroup]
+##[group]Installed versions
+Successfully set up CPython (3.14.7)
+##[endgroup]
+[command]/opt/hostedtoolcache/Python/3.14.7/x64/bin/pip cache dir
+/home/runner/.cache/pip
+Cache hit for: setup-python-Linux-x64-24.04-Ubuntu-python-3.14.7-pip-68a49f2e1140a39d3009345a13baf17dbd9dae5e2f2139ef25ce24c2e2f6b3aa
+Received 26131632 of 26131632 (100.0%), 125.9 MBs/sec
+Cache Size: ~25 MB (26131632 B)
+[command]/usr/bin/tar -xf /home/runner/work/_temp/9861ce4c-60f7-485a-8b18-e981658f35a3/cache.tzst -P -C /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at --use-compress-program unzstd
+Cache restored successfully
+Cache restored from key: setup-python-Linux-x64-24.04-Ubuntu-python-3.14.7-pip-68a49f2e1140a39d3009345a13baf17dbd9dae5e2f2139ef25ce24c2e2f6b3aa
+##[group]Run pip install -r requirements.txt
+[36;1mpip install -r requirements.txt[0m
+shell: /usr/bin/bash -e {0}
+env:
+  PYTHON_VERSION: 3.14
+  CLINICA_DATABASE_URL: sqlite:///./homologacao.db
+  CLINICA_CARREGAR_DADOS_DEMONSTRACAO: true
+  CLINICA_COOKIE_SEGURO: false
+  CLINICA_CORS_ORIGENS: https://app.clinicas.exemplo.dev
+  pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+##[endgroup]
+Collecting fastapi==0.142.2 (from -r requirements.txt (line 1))
+  Using cached fastapi-0.142.2-py3-none-any.whl.metadata (27 kB)
+Collecting uvicorn==0.54.0 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+  Using cached uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting jinja2==3.1.6 (from -r requirements.txt (line 3))
+  Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting python-multipart==0.0.32 (from -r requirements.txt (line 4))
+  Using cached python_multipart-0.0.32-py3-none-any.whl.metadata (2.1 kB)
+Collecting pydantic==2.13.5 (from pydantic[email]==2.13.5->-r requirements.txt (line 5))
+  Using cached pydantic-2.13.5-py3-none-any.whl.metadata (110 kB)
+Collecting pydantic-settings==2.15.0 (from -r requirements.txt (line 6))
+  Using cached pydantic_settings-2.15.0-py3-none-any.whl.metadata (3.9 kB)
+Collecting sqlmodel==0.0.47 (from -r requirements.txt (line 7))
+  Using cached sqlmodel-0.0.47-py3-none-any.whl.metadata (9.5 kB)
+Collecting bcrypt==5.0.0 (from -r requirements.txt (line 8))
+  Using cached bcrypt-5.0.0-cp39-abi3-manylinux_2_34_x86_64.whl.metadata (10 kB)
+Collecting pyjwt==2.15.1 (from -r requirements.txt (line 9))
+  Using cached pyjwt-2.15.1-py3-none-any.whl.metadata (3.5 kB)
+Collecting slowapi==0.1.10 (from -r requirements.txt (line 10))
+  Using cached slowapi-0.1.10-py3-none-any.whl.metadata (3.3 kB)
+Collecting starlette>=0.46.0 (from fastapi==0.142.2->-r requirements.txt (line 1))
+  Using cached starlette-1.7.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting typing-extensions>=4.8.0 (from fastapi==0.142.2->-r requirements.txt (line 1))
+  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting typing-inspection>=0.4.2 (from fastapi==0.142.2->-r requirements.txt (line 1))
+  Using cached typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+Collecting annotated-doc>=0.0.2 (from fastapi==0.142.2->-r requirements.txt (line 1))
+  Using cached annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+Collecting opentelemetry-api>=1.44.0 (from fastapi==0.142.2->-r requirements.txt (line 1))
+  Using cached opentelemetry_api-1.45.0-py3-none-any.whl.metadata (1.4 kB)
+Collecting click>=7.0 (from uvicorn==0.54.0->uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+  Using cached click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting h11>=0.8 (from uvicorn==0.54.0->uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+  Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting MarkupSafe>=2.0 (from jinja2==3.1.6->-r requirements.txt (line 3))
+  Using cached markupsafe-3.0.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Collecting annotated-types>=0.6.0 (from pydantic==2.13.5->pydantic[email]==2.13.5->-r requirements.txt (line 5))
+  Using cached annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.46.5 (from pydantic==2.13.5->pydantic[email]==2.13.5->-r requirements.txt (line 5))
+  Using cached pydantic_core-2.46.5-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+Collecting python-dotenv>=0.21.0 (from pydantic-settings==2.15.0->-r requirements.txt (line 6))
+  Using cached python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+Collecting SQLAlchemy<2.1.0,>=2.0.14 (from sqlmodel==0.0.47->-r requirements.txt (line 7))
+  Using cached sqlalchemy-2.0.54-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (9.7 kB)
+Collecting limits>=2.3 (from slowapi==0.1.10->-r requirements.txt (line 10))
+  Using cached limits-5.8.0-py3-none-any.whl.metadata (10 kB)
+Collecting email-validator>=2.0.0 (from pydantic[email]==2.13.5->-r requirements.txt (line 5))
+  Using cached email_validator-2.3.0-py3-none-any.whl.metadata (26 kB)
+Collecting httptools>=0.8.0 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+  Using cached httptools-0.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+Collecting pyyaml>=5.1 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+  Using cached pyyaml-6.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Collecting uvloop>=0.15.1 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+  Using cached uvloop-0.23.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.1 kB)
+Collecting watchfiles>=0.20 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+  Using cached watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+Collecting websockets>=13.0 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+  Using cached websockets-17.2-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+Collecting greenlet>=1 (from SQLAlchemy<2.1.0,>=2.0.14->sqlmodel==0.0.47->-r requirements.txt (line 7))
+  Using cached greenlet-3.5.6-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+Collecting dnspython>=2.0.0 (from email-validator>=2.0.0->pydantic[email]==2.13.5->-r requirements.txt (line 5))
+  Using cached dnspython-2.8.0-py3-none-any.whl.metadata (5.7 kB)
+Collecting idna>=2.0.0 (from email-validator>=2.0.0->pydantic[email]==2.13.5->-r requirements.txt (line 5))
+  Using cached idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+Collecting deprecated>=1.2 (from limits>=2.3->slowapi==0.1.10->-r requirements.txt (line 10))
+  Using cached deprecated-3.0.0-py3-none-any.whl.metadata (6.5 kB)
+Collecting packaging>=21 (from limits>=2.3->slowapi==0.1.10->-r requirements.txt (line 10))
+  Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting wrapt<3,>=1.16 (from deprecated>=1.2->limits>=2.3->slowapi==0.1.10->-r requirements.txt (line 10))
+  Using cached wrapt-2.5.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (7.6 kB)
+Collecting anyio<5,>=4.0.0 (from starlette>=0.46.0->fastapi==0.142.2->-r requirements.txt (line 1))
+  Using cached anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+Using cached fastapi-0.142.2-py3-none-any.whl (144 kB)
+Using cached uvicorn-0.54.0-py3-none-any.whl (87 kB)
+Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+Using cached python_multipart-0.0.32-py3-none-any.whl (30 kB)
+Using cached pydantic-2.13.5-py3-none-any.whl (472 kB)
+Using cached pydantic_settings-2.15.0-py3-none-any.whl (69 kB)
+Using cached sqlmodel-0.0.47-py3-none-any.whl (31 kB)
+Using cached bcrypt-5.0.0-cp39-abi3-manylinux_2_34_x86_64.whl (278 kB)
+Using cached pyjwt-2.15.1-py3-none-any.whl (33 kB)
+Using cached slowapi-0.1.10-py3-none-any.whl (14 kB)
+Using cached pydantic_core-2.46.5-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+Using cached sqlalchemy-2.0.54-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.4 MB)
+Using cached annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+Using cached annotated_types-0.8.0-py3-none-any.whl (13 kB)
+Using cached click-8.5.0-py3-none-any.whl (125 kB)
+Using cached email_validator-2.3.0-py3-none-any.whl (35 kB)
+Using cached dnspython-2.8.0-py3-none-any.whl (331 kB)
+Using cached greenlet-3.5.6-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (670 kB)
+Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Using cached httptools-0.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (481 kB)
+Using cached idna-3.20-py3-none-any.whl (69 kB)
+Using cached limits-5.8.0-py3-none-any.whl (60 kB)
+Using cached deprecated-3.0.0-py3-none-any.whl (21 kB)
+Using cached wrapt-2.5.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (251 kB)
+Using cached markupsafe-3.0.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (23 kB)
+Using cached opentelemetry_api-1.45.0-py3-none-any.whl (60 kB)
+Using cached packaging-26.3-py3-none-any.whl (129 kB)
+Using cached python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+Using cached pyyaml-6.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (794 kB)
+Using cached starlette-1.7.0-py3-none-any.whl (78 kB)
+Using cached anyio-4.15.1-py3-none-any.whl (132 kB)
+Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Using cached typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+Using cached uvloop-0.23.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.4 MB)
+Using cached watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (458 kB)
+Using cached websockets-17.2-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (225 kB)
+Installing collected packages: wrapt, websockets, uvloop, typing-extensions, pyyaml, python-multipart, python-dotenv, pyjwt, packaging, MarkupSafe, idna, httptools, h11, greenlet, dnspython, click, bcrypt, annotated-types, annotated-doc, uvicorn, typing-inspection, SQLAlchemy, pydantic-core, opentelemetry-api, jinja2, email-validator, deprecated, anyio, watchfiles, starlette, pydantic, limits, sqlmodel, slowapi, pydantic-settings, fastapi
+
+Successfully installed MarkupSafe-3.0.4 SQLAlchemy-2.0.54 annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.15.1 bcrypt-5.0.0 click-8.5.0 deprecated-3.0.0 dnspython-2.8.0 email-validator-2.3.0 fastapi-0.142.2 greenlet-3.5.6 h11-0.16.0 httptools-0.8.0 idna-3.20 jinja2-3.1.6 limits-5.8.0 opentelemetry-api-1.45.0 packaging-26.3 pydantic-2.13.5 pydantic-core-2.46.5 pydantic-settings-2.15.0 pyjwt-2.15.1 python-dotenv-1.2.4 python-multipart-0.0.32 pyyaml-6.0.3 slowapi-0.1.10 sqlmodel-0.0.47 starlette-1.7.0 typing-extensions-4.16.0 typing-inspection-0.4.4 uvicorn-0.54.0 uvloop-0.23.0 watchfiles-1.3.0 websockets-17.2 wrapt-2.5.0
+##[group]Run SEGREDO="$(python -c 'import secrets; print(secrets.token_urlsafe(48))')"
+[36;1mSEGREDO="$(python -c 'import secrets; print(secrets.token_urlsafe(48))')"[0m
+[36;1mecho "::add-mask::$SEGREDO"[0m
+[36;1mCLINICA_JWT_SECRET="$SEGREDO" nohup uvicorn main:app --host 0.0.0.0 --port 8000 --no-server-header > uvicorn.log 2>&1 &[0m
+[36;1mfor i in $(seq 1 30); do curl -sf http://localhost:8000/ && break; sleep 1; done[0m
+shell: /usr/bin/bash -e {0}
+env:
+  PYTHON_VERSION: 3.14
+  CLINICA_DATABASE_URL: sqlite:///./homologacao.db
+  CLINICA_CARREGAR_DADOS_DEMONSTRACAO: true
+  CLINICA_COOKIE_SEGURO: false
+  CLINICA_CORS_ORIGENS: https://app.clinicas.exemplo.dev
+  pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+##[endgroup]
+{"servico":"consultas-api","status":"ok"}
+##[group]Run curl -s -o token.json -X POST http://localhost:8000/auth/token \
+[36;1mcurl -s -o token.json -X POST http://localhost:8000/auth/token \[0m
+[36;1m  --data-urlencode "username=$DAST_PROFISSIONAL_EMAIL" --data-urlencode "***"[0m
+[36;1mTOKEN=$(python -c "import json; print(json.load(open('token.json'))['access_token'])")[0m
+[36;1mrm token.json[0m
+[36;1mCSRF=$(curl -s -c cj http://localhost:8000/web/login | grep -o 'name="csrf_token" value="[^"]*"' | sed 's/.*value="//;s/"//')[0m
+[36;1mSESSAO=$(curl -s -i -b cj -X POST http://localhost:8000/web/login \[0m
+[36;1m  --data-urlencode "email=$DAST_RECEPCAO_EMAIL" --data-urlencode "senha=$DAST_RECEPCAO_SENHA" \[0m
+[36;1m  --data-urlencode "csrf_token=$CSRF" | grep -i "set-cookie: sessao_clinica" | sed 's/.*sessao_clinica=\([^;]*\).*/\1/')[0m
+[36;1mecho "::add-mask::$TOKEN"[0m
+[36;1mecho "::add-mask::$SESSAO"[0m
+[36;1mecho "ZAP_TOKEN=$TOKEN" >> "$GITHUB_ENV"[0m
+[36;1mecho "ZAP_SESSAO=$SESSAO" >> "$GITHUB_ENV"[0m
+shell: /usr/bin/bash -e {0}
+env:
+  PYTHON_VERSION: 3.14
+  CLINICA_DATABASE_URL: sqlite:///./homologacao.db
+  CLINICA_CARREGAR_DADOS_DEMONSTRACAO: true
+  CLINICA_COOKIE_SEGURO: false
+  CLINICA_CORS_ORIGENS: https://app.clinicas.exemplo.dev
+  pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+  DAST_PROFISSIONAL_EMAIL: ***
+  DAST_PROFISSIONAL_SENHA: ***
+  DAST_RECEPCAO_EMAIL: ***
+  DAST_RECEPCAO_SENHA: ***
+##[endgroup]
+##[group]Run mkdir -p zap && cp .zap/rules.tsv zap/ && chmod -R 777 zap
+[36;1mmkdir -p zap && cp .zap/rules.tsv zap/ && chmod -R 777 zap[0m
+[36;1mdocker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" \[0m
+[36;1m  -e ZAP_AUTH_HEADER=Cookie -e "ZAP_AUTH_HEADER_VALUE=sessao_clinica=$ZAP_SESSAO" \[0m
+[36;1m  zaproxy/zap-stable@sha256:781a2bdaea47324e7bab583e2263f21d257b0aee61ed51521a5be45f5f5081ef zap-baseline.py -t http://localhost:8000/web/agenda -m 2 -c rules.tsv \[0m
+[36;1m  -J zap-web.json -r zap-web.html || true[0m
+shell: /usr/bin/bash -e {0}
+env:
+  PYTHON_VERSION: 3.14
+  CLINICA_DATABASE_URL: sqlite:///./homologacao.db
+  CLINICA_CARREGAR_DADOS_DEMONSTRACAO: true
+  CLINICA_COOKIE_SEGURO: false
+  CLINICA_CORS_ORIGENS: https://app.clinicas.exemplo.dev
+  pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+  ZAP_TOKEN: ***
+  ZAP_SESSAO: ***
+##[endgroup]
+Unable to find image 'zaproxy/zap-stable@sha256:781a2bdaea47324e7bab583e2263f21d257b0aee61ed51521a5be45f5f5081ef' locally
+docker.io/zaproxy/zap-stable@sha256:781a2bdaea47324e7bab583e2263f21d257b0aee61ed51521a5be45f5f5081ef: Pulling from zaproxy/zap-stable
+039e6f9f9752: Pulling fs layer
+d6b9d96ab582: Pulling fs layer
+a3cc44adff2f: Pulling fs layer
+b4d37c583758: Pulling fs layer
+bd527f0cd38b: Pulling fs layer
+d216f30309c1: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+0d2cbb6a3c69: Pulling fs layer
+c0b230616ec7: Pulling fs layer
+7e90f09586cd: Pulling fs layer
+f508357c279f: Pulling fs layer
+16465afc17cf: Pulling fs layer
+372beebcd1ba: Pulling fs layer
+ef80d0c5902f: Pulling fs layer
+1a1e22703782: Pulling fs layer
+832a68ab77b4: Pulling fs layer
+8c78b421bef3: Pulling fs layer
+a59279b59ae8: Pulling fs layer
+5c554884f9ef: Pulling fs layer
+bda18bc6327a: Pulling fs layer
+bd527f0cd38b: Waiting
+d216f30309c1: Waiting
+4f4fb700ef54: Waiting
+0d2cbb6a3c69: Waiting
+c0b230616ec7: Waiting
+7e90f09586cd: Waiting
+f508357c279f: Waiting
+16465afc17cf: Waiting
+372beebcd1ba: Waiting
+ef80d0c5902f: Waiting
+1a1e22703782: Waiting
+832a68ab77b4: Waiting
+8c78b421bef3: Waiting
+a59279b59ae8: Waiting
+5c554884f9ef: Waiting
+bda18bc6327a: Waiting
+b4d37c583758: Waiting
+039e6f9f9752: Verifying Checksum
+039e6f9f9752: Download complete
+b4d37c583758: Verifying Checksum
+b4d37c583758: Download complete
+a3cc44adff2f: Verifying Checksum
+a3cc44adff2f: Download complete
+bd527f0cd38b: Verifying Checksum
+bd527f0cd38b: Download complete
+d216f30309c1: Verifying Checksum
+d216f30309c1: Download complete
+4f4fb700ef54: Verifying Checksum
+4f4fb700ef54: Download complete
+0d2cbb6a3c69: Verifying Checksum
+0d2cbb6a3c69: Download complete
+7e90f09586cd: Verifying Checksum
+7e90f09586cd: Download complete
+f508357c279f: Verifying Checksum
+f508357c279f: Download complete
+16465afc17cf: Verifying Checksum
+16465afc17cf: Download complete
+372beebcd1ba: Verifying Checksum
+372beebcd1ba: Download complete
+ef80d0c5902f: Verifying Checksum
+ef80d0c5902f: Download complete
+1a1e22703782: Verifying Checksum
+1a1e22703782: Download complete
+832a68ab77b4: Verifying Checksum
+832a68ab77b4: Download complete
+8c78b421bef3: Verifying Checksum
+8c78b421bef3: Download complete
+a59279b59ae8: Verifying Checksum
+a59279b59ae8: Download complete
+5c554884f9ef: Verifying Checksum
+5c554884f9ef: Download complete
+bda18bc6327a: Verifying Checksum
+bda18bc6327a: Download complete
+d6b9d96ab582: Verifying Checksum
+d6b9d96ab582: Download complete
+c0b230616ec7: Verifying Checksum
+c0b230616ec7: Download complete
+039e6f9f9752: Pull complete
+d6b9d96ab582: Pull complete
+a3cc44adff2f: Pull complete
+b4d37c583758: Pull complete
+bd527f0cd38b: Pull complete
+d216f30309c1: Pull complete
+4f4fb700ef54: Pull complete
+0d2cbb6a3c69: Pull complete
+c0b230616ec7: Pull complete
+7e90f09586cd: Pull complete
+f508357c279f: Pull complete
+16465afc17cf: Pull complete
+372beebcd1ba: Pull complete
+ef80d0c5902f: Pull complete
+1a1e22703782: Pull complete
+832a68ab77b4: Pull complete
+8c78b421bef3: Pull complete
+a59279b59ae8: Pull complete
+5c554884f9ef: Pull complete
+bda18bc6327a: Pull complete
+Digest: sha256:781a2bdaea47324e7bab583e2263f21d257b0aee61ed51521a5be45f5f5081ef
+Status: Downloaded newer image for zaproxy/zap-stable@sha256:781a2bdaea47324e7bab583e2263f21d257b0aee61ed51521a5be45f5f5081ef
+Using the Automation Framework
+Total of 10 URLs
+PASS: Vulnerable JS Library (Powered by Retire.js) [10003]
+PASS: In Page Banner Information Leak [10009]
+PASS: Cookie No HttpOnly Flag [10010]
+PASS: Cookie Without Secure Flag [10011]
+PASS: Re-examine Cache-control Directives [10015]
+PASS: Cross-Domain JavaScript Source File Inclusion [10017]
+PASS: Content-Type Header Missing [10019]
+PASS: Anti-clickjacking Header [10020]
+PASS: X-Content-Type-Options Header Missing [10021]
+PASS: Information Disclosure - Debug Error Messages [10023]
+PASS: Information Disclosure - Sensitive Information in URL [10024]
+PASS: Information Disclosure - Sensitive Information in HTTP Referrer Header [10025]
+PASS: HTTP Parameter Override [10026]
+PASS: Information Disclosure - Suspicious Comments [10027]
+PASS: Off-site Redirect [10028]
+PASS: Cookie Poisoning [10029]
+PASS: User Controllable Charset [10030]
+PASS: User Controllable HTML Element Attribute (Potential XSS) [10031]
+PASS: Viewstate [10032]
+PASS: Directory Browsing [10033]
+PASS: Heartbleed OpenSSL Vulnerability (Indicative) [10034]
+PASS: Strict-Transport-Security Header [10035]
+PASS: HTTP Server Response Header [10036]
+PASS: Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s) [10037]
+PASS: Content Security Policy (CSP) Header Not Set [10038]
+PASS: X-Backend-Server Header Information Leak [10039]
+PASS: Secure Pages Include Mixed Content [10040]
+PASS: HTTP to HTTPS Insecure Transition in Form Post [10041]
+PASS: HTTPS to HTTP Insecure Transition in Form Post [10042]
+PASS: User Controllable JavaScript Event (XSS) [10043]
+PASS: Big Redirect Detected (Potential Sensitive Information Leak) [10044]
+PASS: Retrieved from Cache [10050]
+PASS: X-ChromeLogger-Data (XCOLD) Header Information Leak [10052]
+PASS: Cookie without SameSite Attribute [10054]
+PASS: CSP [10055]
+PASS: X-Debug-Token Information Leak [10056]
+PASS: Username Hash Found [10057]
+PASS: X-AspNet-Version Response Header [10061]
+PASS: PII Disclosure [10062]
+PASS: Permissions Policy Header Not Set [10063]
+PASS: Timestamp Disclosure [10096]
+PASS: Hash Disclosure [10097]
+PASS: Cross-Domain Misconfiguration [10098]
+PASS: Source Code Disclosure [10099]
+PASS: Weak Authentication Method [10105]
+PASS: Reverse Tabnabbing [10108]
+PASS: Modern Web Application [10109]
+PASS: Dangerous JS Functions [10110]
+PASS: Authentication Request Identified [10111]
+PASS: Verification Request Identified [10113]
+PASS: Script Served From Malicious Domain (polyfill) [10115]
+PASS: ZAP is Out of Date [10116]
+PASS: Absence of Anti-CSRF Tokens [10202]
+PASS: Private IP Disclosure [2]
+PASS: Session ID in URL Rewrite [3]
+PASS: Script Passive Scan Rules [50001]
+PASS: Stats Passive Scan Rule [50003]
+PASS: Insecure JSF ViewState [90001]
+PASS: Java Serialization Object [90002]
+PASS: Sub Resource Integrity Attribute Missing [90003]
+PASS: Insufficient Site Isolation Against Spectre Vulnerability [90004]
+PASS: Charset Mismatch [90011]
+PASS: Application Error Disclosure [90022]
+PASS: WSDL File Detection [90030]
+PASS: Loosely Scoped Cookie [90033]
+IGNORE: Non-Storable Content [10049] x 5 
+	http://localhost:8000/robots.txt (401 Unauthorized)
+	http://localhost:8000/sitemap.xml (401 Unauthorized)
+	http://localhost:8000/web (401 Unauthorized)
+	http://localhost:8000/web/agenda (200 OK)
+	http://localhost:8000/static/agenda.css (200 OK)
+WARN-NEW: Session Management Response Identified [10112] x 3 
+	http://localhost:8000/web/agenda (200 OK)
+	http://localhost:8000/web/login (200 OK)
+	http://localhost:8000/web/login (200 OK)
+FAIL-NEW: 0	FAIL-INPROG: 0	WARN-NEW: 1	WARN-INPROG: 0	INFO: 0	IGNORE: 1	PASS: 65
+##[group]Run docker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" \
+[36;1mdocker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" \[0m
+[36;1m  -e ZAP_AUTH_HEADER=Authorization -e "ZAP_AUTH_HEADER_VALUE=***" \[0m
+[36;1m  zaproxy/zap-stable@sha256:781a2bdaea47324e7bab583e2263f21d257b0aee61ed51521a5be45f5f5081ef zap-api-scan.py -t http://localhost:8000/openapi.json -f openapi -S -c rules.tsv \[0m
+[36;1m  -J zap-api.json -r zap-api.html || true[0m
+shell: /usr/bin/bash -e {0}
+env:
+  PYTHON_VERSION: 3.14
+  CLINICA_DATABASE_URL: sqlite:///./homologacao.db
+  CLINICA_CARREGAR_DADOS_DEMONSTRACAO: true
+  CLINICA_COOKIE_SEGURO: false
+  CLINICA_CORS_ORIGENS: https://app.clinicas.exemplo.dev
+  pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+  ZAP_TOKEN: ***
+  ZAP_SESSAO: ***
+##[endgroup]
+2026-10-04 00:56:05,375 Number of Imported URLs: 20
+Total of 20 URLs
+PASS: Directory Browsing [0]
+PASS: Vulnerable JS Library (Powered by Retire.js) [10003]
+PASS: In Page Banner Information Leak [10009]
+PASS: Cookie No HttpOnly Flag [10010]
+PASS: Cookie Without Secure Flag [10011]
+PASS: Re-examine Cache-control Directives [10015]
+PASS: Cross-Domain JavaScript Source File Inclusion [10017]
+PASS: Content-Type Header Missing [10019]
+PASS: Anti-clickjacking Header [10020]
+PASS: X-Content-Type-Options Header Missing [10021]
+PASS: Information Disclosure - Debug Error Messages [10023]
+PASS: Information Disclosure - Sensitive Information in URL [10024]
+PASS: Information Disclosure - Sensitive Information in HTTP Referrer Header [10025]
+PASS: HTTP Parameter Override [10026]
+PASS: Information Disclosure - Suspicious Comments [10027]
+PASS: Off-site Redirect [10028]
+PASS: Cookie Poisoning [10029]
+PASS: User Controllable Charset [10030]
+PASS: User Controllable HTML Element Attribute (Potential XSS) [10031]
+PASS: Viewstate [10032]
+PASS: Directory Browsing [10033]
+PASS: Heartbleed OpenSSL Vulnerability (Indicative) [10034]
+PASS: Strict-Transport-Security Header [10035]
+PASS: HTTP Server Response Header [10036]
+PASS: Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s) [10037]
+PASS: Content Security Policy (CSP) Header Not Set [10038]
+PASS: X-Backend-Server Header Information Leak [10039]
+PASS: Secure Pages Include Mixed Content [10040]
+PASS: HTTP to HTTPS Insecure Transition in Form Post [10041]
+PASS: HTTPS to HTTP Insecure Transition in Form Post [10042]
+PASS: User Controllable JavaScript Event (XSS) [10043]
+PASS: Big Redirect Detected (Potential Sensitive Information Leak) [10044]
+PASS: Source Code Disclosure - /WEB-INF Folder [10045]
+PASS: HTTPS Content Available via HTTP [10047]
+PASS: Remote Code Execution - Shell Shock [10048]
+PASS: Content Cacheability [10049]
+PASS: Retrieved from Cache [10050]
+PASS: X-ChromeLogger-Data (XCOLD) Header Information Leak [10052]
+PASS: Cookie without SameSite Attribute [10054]
+PASS: CSP [10055]
+PASS: X-Debug-Token Information Leak [10056]
+PASS: Username Hash Found [10057]
+PASS: GET for POST [10058]
+PASS: X-AspNet-Version Response Header [10061]
+PASS: PII Disclosure [10062]
+PASS: Permissions Policy Header Not Set [10063]
+PASS: Hash Disclosure [10097]
+PASS: Cross-Domain Misconfiguration [10098]
+PASS: Source Code Disclosure [10099]
+PASS: User Agent Fuzzer [10104]
+PASS: Weak Authentication Method [10105]
+PASS: HTTP Only Site [10106]
+PASS: Reverse Tabnabbing [10108]
+PASS: Modern Web Application [10109]
+PASS: Dangerous JS Functions [10110]
+PASS: Authentication Request Identified [10111]
+PASS: Session Management Response Identified [10112]
+PASS: Verification Request Identified [10113]
+PASS: Script Served From Malicious Domain (polyfill) [10115]
+PASS: ZAP is Out of Date [10116]
+PASS: Absence of Anti-CSRF Tokens [10202]
+PASS: Private IP Disclosure [2]
+PASS: Heartbleed OpenSSL Vulnerability [20015]
+PASS: Source Code Disclosure - CVE-2012-1823 [20017]
+PASS: Remote Code Execution - CVE-2012-1823 [20018]
+PASS: External Redirect [20019]
+PASS: Session ID in URL Rewrite [3]
+PASS: Buffer Overflow [30001]
+PASS: Format String Error [30002]
+PASS: CRLF Injection [40003]
+PASS: Parameter Tampering [40008]
+PASS: Server Side Include [40009]
+PASS: Cross Site Scripting (Reflected) [40012]
+PASS: Cross Site Scripting (Persistent) [40014]
+PASS: Cross Site Scripting (Persistent) - Prime [40016]
+PASS: Cross Site Scripting (Persistent) - Spider [40017]
+PASS: SQL Injection [40018]
+PASS: SQL Injection - MySQL (Time Based) [40019]
+PASS: SQL Injection - Hypersonic SQL (Time Based) [40020]
+PASS: SQL Injection - Oracle (Time Based) [40021]
+PASS: SQL Injection - PostgreSQL (Time Based) [40022]
+PASS: Cross Site Scripting (DOM Based) [40026]
+PASS: SQL Injection - MsSQL (Time Based) [40027]
+PASS: ELMAH Information Leak [40028]
+PASS: Trace.axd Information Leak [40029]
+PASS: .htaccess Information Leak [40032]
+PASS: .env Information Leak [40034]
+PASS: Hidden File Finder [40035]
+PASS: Spring Actuator Information Leak [40042]
+PASS: Log4Shell [40043]
+PASS: Exponential Entity Expansion (Billion Laughs Attack) [40044]
+PASS: Spring4Shell [40045]
+PASS: Remote Code Execution (React2Shell) [40048]
+PASS: Script Active Scan Rules [50000]
+PASS: Script Passive Scan Rules [50001]
+PASS: Path Traversal [6]
+PASS: Remote File Inclusion [7]
+PASS: Insecure JSF ViewState [90001]
+PASS: Java Serialization Object [90002]
+PASS: Sub Resource Integrity Attribute Missing [90003]
+PASS: Insufficient Site Isolation Against Spectre Vulnerability [90004]
+PASS: Charset Mismatch [90011]
+PASS: XSLT Injection [90017]
+PASS: Server Side Code Injection [90019]
+PASS: Remote OS Command Injection [90020]
+PASS: XPath Injection [90021]
+PASS: Application Error Disclosure [90022]
+PASS: XML External Entity Attack [90023]
+PASS: Generic Padding Oracle [90024]
+PASS: SOAP Action Spoofing [90026]
+PASS: SOAP XML Injection [90029]
+PASS: WSDL File Detection [90030]
+PASS: Loosely Scoped Cookie [90033]
+PASS: Cloud Metadata Potentially Exposed [90034]
+PASS: Server Side Template Injection [90035]
+PASS: Server Side Template Injection (Blind) [90036]
+PASS: Remote OS Command Injection (Time Based) [90037]
+IGNORE-NEW: Timestamp Disclosure - Unix [10096] x 2 
+	http://localhost:8000/auth/eu (200 OK)
+	http://localhost:8000/auth/eu (200 OK)
+FAIL-NEW: 0	FAIL-INPROG: 0	WARN-NEW: 0	WARN-INPROG: 0	INFO: 0	IGNORE: 1	PASS: 117
+##[group]Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+with:
+  name: dast
+  path: zap/zap-*.json
+zap/zap-*.html
+
+  if-no-files-found: warn
+  compression-level: 6
+  overwrite: false
+  include-hidden-files: false
+  archive: true
+env:
+  PYTHON_VERSION: 3.14
+  CLINICA_DATABASE_URL: sqlite:///./homologacao.db
+  CLINICA_CARREGAR_DADOS_DEMONSTRACAO: true
+  CLINICA_COOKIE_SEGURO: false
+  CLINICA_CORS_ORIGENS: https://app.clinicas.exemplo.dev
+  pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+  ZAP_TOKEN: ***
+  ZAP_SESSAO: ***
+##[endgroup]
+With the provided path, there will be 4 files uploaded
+Artifact name is valid!
+Root directory input is valid!
+Uploading artifact: dast.zip
+Beginning upload of artifact content to blob storage
+Uploaded bytes 35625
+Finished uploading artifact content to blob storage!
+SHA256 digest of uploaded artifact is 08c2bf2e711925987783e20967f2e91d57eff1ae45ed3c218c4bee41c21a0095
+Finalizing artifact upload
+Artifact dast successfully finalized. Artifact ID 11289114684
+Artifact dast has been successfully uploaded! Final size is 35625 bytes. Artifact ID is 11289114684
+Artifact download URL: https://github.com/yohanngusso/consultas-api-dr2-at/actions/runs/37166298281/artifacts/11289114684
+Post job cleanup.
+Cache hit occurred on the primary key setup-python-Linux-x64-24.04-Ubuntu-python-3.14.7-pip-68a49f2e1140a39d3009345a13baf17dbd9dae5e2f2139ef25ce24c2e2f6b3aa, not saving cache.
+Post job cleanup.
+[command]/usr/bin/git version
+git version 2.55.0
+Temporarily overriding HOME='/home/runner/work/_temp/5e4f58d5-5ffa-4d62-9454-77c3a5d93dee' before making global git config changes
+Adding repository directory to the temporary git global config as a safe directory
+[command]/usr/bin/git config --global --add safe.directory /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at
+Removing SSH command configuration
+[command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+[command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Removing HTTP extra header
+[command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+[command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Removing includeIf entries pointing to credentials config files
+[command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+includeif.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git.path
+includeif.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git/worktrees/*.path
+includeif.gitdir:/github/workspace/.git.path
+includeif.gitdir:/github/workspace/.git/worktrees/*.path
+[command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git.path
+/home/runner/work/_temp/git-credentials-09a15476-7b86-49ae-a2b0-50eba908c9e7.config
+[command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-09a15476\-7b86\-49ae\-a2b0\-50eba908c9e7\.config
+[command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git/worktrees/*.path
+/home/runner/work/_temp/git-credentials-09a15476-7b86-49ae-a2b0-50eba908c9e7.config
+[command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-09a15476\-7b86\-49ae\-a2b0\-50eba908c9e7\.config
+[command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+/github/runner_temp/git-credentials-09a15476-7b86-49ae-a2b0-50eba908c9e7.config
+[command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-09a15476\-7b86\-49ae\-a2b0\-50eba908c9e7\.config
+[command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+/github/runner_temp/git-credentials-09a15476-7b86-49ae-a2b0-50eba908c9e7.config
+[command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-09a15476\-7b86\-49ae\-a2b0\-50eba908c9e7\.config
+[command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Removing credentials config '/home/runner/work/_temp/git-credentials-09a15476-7b86-49ae-a2b0-50eba908c9e7.config'
+Cleaning up orphan processes
+Terminate orphan process: pid (2038) (uvicorn)

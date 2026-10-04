@@ -97,7 +97,7 @@ python ci/auditar_openapi.py                      # auditoria da especificação
 python ci/security_gate.py --bandit ... --zap ... # critério de bloqueio
 ```
 
-O workflow `.github/workflows/security.yml` roda SAST (Bandit, Semgrep), SCA (pip-audit), testes, DAST (ZAP passivo) e o security gate. Para o job de DAST, configure os segredos `DAST_PROFISSIONAL_EMAIL`, `DAST_PROFISSIONAL_SENHA`, `DAST_RECEPCAO_EMAIL` e `DAST_RECEPCAO_SENHA` no repositório.
+O workflow `.github/workflows/security.yml` roda SAST (Bandit, Semgrep), SCA (pip-audit), testes, DAST (ZAP passivo) e o security gate em todo push na `main`, em todo pull request e semanalmente. O Dependabot (`.github/dependabot.yml`) abre PRs de atualização de pacotes e actions. Para o job de DAST, configure os segredos `DAST_PROFISSIONAL_EMAIL`, `DAST_PROFISSIONAL_SENHA`, `DAST_RECEPCAO_EMAIL` e `DAST_RECEPCAO_SENHA` no repositório.
 
 ## Modo de demonstração
 

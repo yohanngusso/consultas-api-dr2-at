@@ -80,7 +80,23 @@ As ferramentas rodam com `|| true` para sempre produzir relatório; quem decide 
 
 Quando o próprio workflow passou pelo Semgrep, ele apontou actions referenciadas por tag mutável (`@v4`, CWE-1357): o dono da action pode reapontar a tag e injetar código no pipeline. Como é médio fora das classes bloqueantes, entrou como aviso; ainda assim foi corrigido fixando cada action pelo SHA do commit (com a versão em comentário) e as imagens do Semgrep e do ZAP por digest.
 
-A mesma sequência foi executada localmente (`AT_ferramentas/executar_pipeline_local.py`), com Semgrep e ZAP pelas imagens Docker oficiais. As saídas estão em `evidencias/pipeline/` e `evidencias/zap/`.
+A mesma sequência também roda localmente (`AT_ferramentas/executar_pipeline_local.py`), com Semgrep e ZAP pelas imagens Docker oficiais. As saídas estão em `evidencias/pipeline/` e `evidencias/zap/`.
+
+## Execução no GitHub Actions
+
+O projeto está no repositório privado `yohanngusso/consultas-api-dr2-at`. Os quatro segredos do DAST foram cadastrados como Actions secrets (cifrados com a chave pública do repositório) e aparecem como `***` nos logs. Resumo e log de cada job estão em `evidencias/github-actions/`.
+
+| Execução | Evento | Resultado | O que demonstra |
+|---|---|---|---|
+| 37166298281 | push na `main` (commit inicial) | Todos os jobs verdes em 3m32s; gate APROVADO com 18 achados, 0 bloqueantes e 3 exceções | Pipeline completo rodando no GitHub com o mesmo resultado da execução local: 174 testes, OpenAPI sem achados, ZAP autenticado sem falhas |
+| 37166685255 | push na `main` (Dependabot) | Verde | `.github/dependabot.yml` passa a abrir PRs semanais para pip e para as actions fixadas por SHA; cada PR do Dependabot passa pelo mesmo pipeline |
+| 37166747797 | pull request #1 | Testes, SAST, SCA e DAST verdes; **gate BLOQUEADO** | PR de demonstração com `buscar_paciente_por_cpf` montando SQL por f-string em `app/database.py`. Os testes passam porque a função não é usada; quem barra é o gate: Semgrep `avoid-sqlalchemy-text` (alta) e Bandit B608 (médio, mas CWE-89). A exceção de `app/routes/inseguro.py` não cobre o arquivo novo. PR fechado sem merge |
+
+![Execução aprovada na main](../evidencias/tela-07-github-actions-main-aprovado.png)
+
+O PR #1 mostra o motivo de o gate ser um job separado: um pipeline que só rodasse testes teria aprovado a mudança.
+
+Limitação: tornar o `Security gate` um status check obrigatório para merge na `main` (branch protection ou rulesets) exige GitHub Pro em repositório privado. No plano gratuito o bloqueio aparece no PR, mas não impede tecnicamente o merge (risco residual R-10).
 
 ## Testes de autorização expandidos a partir do threat model
 

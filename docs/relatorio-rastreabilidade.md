@@ -52,6 +52,7 @@ Liga cada ameaça do threat model (Exercício 4) à categoria OWASP, ao finding 
 | ZAP | Nenhum alerta médio ou alto |
 | Auditoria OpenAPI | 0 achados |
 | Security gate | APROVADO (`evidencias/pipeline/gate-final.md`) |
+| GitHub Actions | `main` verde (execuções 37166298281 e 37166685255); PR #1 com SQL concatenado bloqueado pelo gate (37166747797) (`evidencias/github-actions/`) |
 
 ## 4. Riscos residuais
 
@@ -66,6 +67,7 @@ Liga cada ameaça do threat model (Exercício 4) à categoria OWASP, ao finding 
 | R-07 | CSP de `/docs` com `'unsafe-inline'` | Exigência do Swagger UI | Só nas páginas de documentação, que não exibem dado de usuário | Aceitável com `CLINICA_DOCS_ATIVOS=false` em produção |
 | R-08 | IAST não implementado | Sem agente gratuito para Python | SAST + DAST + testes de integração por dentro | Aceitável; reavaliar se houver orçamento |
 | R-09 | Bloqueio por identidade pode ser usado para travar contas de terceiros | Efeito colateral do controle | Bloqueio temporário (15 min), não permanente | Aceitável; monitorar picos de bloqueio |
+| R-10 | Security gate não é status check obrigatório no merge | Branch protection em repositório privado exige GitHub Pro | O gate falha visivelmente no PR (demonstrado no PR #1); merge na `main` só por revisão | Aceitável para o Assessment; em produção, habilitar branch protection exigindo o job `Security gate` |
 
 ## 5. Veredito
 
@@ -75,4 +77,4 @@ Liga cada ameaça do threat model (Exercício 4) à categoria OWASP, ao finding 
 2. R-06: build de produção sem o router de demonstração, o template vulnerável e o seed de avaliação (com `CLINICA_CARREGAR_DADOS_DEMONSTRACAO=false` e `CLINICA_DOCS_ATIVOS=false`);
 3. R-05: banco gerenciado com criptografia em repouso.
 
-Os demais riscos residuais (R-02, R-03, R-04, R-07, R-08, R-09) são aceitáveis com as condições descritas e ficam registrados para reavaliação.
+Os demais riscos residuais (R-02, R-03, R-04, R-07, R-08, R-09, R-10) são aceitáveis com as condições descritas e ficam registrados para reavaliação.

@@ -1,0 +1,256 @@
+Current runner version: '2.337.0'
+##[group]Runner Image Provisioner
+Hosted Compute Agent
+Version: 20260901.588
+Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+Build Date: 2026-09-01T19:56:44Z
+Worker ID: {ae12ff14-3e6f-4af6-8d25-2289591deab5}
+Azure Region: mexicocentral
+##[endgroup]
+##[group]Operating System
+Ubuntu
+24.04.5
+LTS
+##[endgroup]
+##[group]Runner Image
+Image: ubuntu-24.04
+Version: 20260927.320.1
+Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+##[endgroup]
+##[group]GITHUB_TOKEN Permissions
+Contents: read
+Metadata: read
+##[endgroup]
+Secret source: Actions
+Cache mode: write
+Prepare workflow directory
+Prepare all required actions
+Getting action download info
+Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Download action repository 'actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97' (SHA:5fda3b95a4ea91299a34e894583c3862153e4b97)
+Download action repository 'actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c' (SHA:3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c)
+Complete job name: Security gate
+##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+with:
+  repository: yohanngusso/consultas-api-dr2-at
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+env:
+  PYTHON_VERSION: 3.14
+##[endgroup]
+Syncing repository: yohanngusso/consultas-api-dr2-at
+##[group]Getting Git version info
+Working directory is '/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at'
+[command]/usr/bin/git version
+git version 2.55.0
+##[endgroup]
+Temporarily overriding HOME='/home/runner/work/_temp/3d2ce8c1-a352-49a5-86af-463ccd9c0b61' before making global git config changes
+Adding repository directory to the temporary git global config as a safe directory
+[command]/usr/bin/git config --global --add safe.directory /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at
+Deleting the contents of '/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at'
+##[group]Determining repository object format
+##[endgroup]
+##[group]Initializing the repository
+[command]/usr/bin/git init /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: will change to "main" in Git 3.0. To configure the initial branch name
+hint: to use in all of your new repositories, which will suppress this warning,
+hint: call:
+hint:
+hint: 	git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint: 	git branch -m <name>
+hint:
+hint: Disable this message with "git config set advice.defaultBranchName false"
+Initialized empty Git repository in /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git/
+[command]/usr/bin/git remote add origin https://github.com/yohanngusso/consultas-api-dr2-at
+##[endgroup]
+##[group]Disabling automatic garbage collection
+[command]/usr/bin/git config --local gc.auto 0
+##[endgroup]
+##[group]Setting up auth
+Removing SSH command configuration
+[command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+[command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Removing HTTP extra header
+[command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+[command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Removing includeIf entries pointing to credentials config files
+[command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+[command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+[command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-e91a8fc5-3af2-4c6a-823e-d2d0ccad2e68.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+[command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git.path /home/runner/work/_temp/git-credentials-e91a8fc5-3af2-4c6a-823e-d2d0ccad2e68.config
+[command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-e91a8fc5-3af2-4c6a-823e-d2d0ccad2e68.config
+[command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-e91a8fc5-3af2-4c6a-823e-d2d0ccad2e68.config
+[command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-e91a8fc5-3af2-4c6a-823e-d2d0ccad2e68.config
+##[endgroup]
+##[group]Fetching the repository
+[command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +20fe4a257332493bf9b691e9a0ff66f8d3a0ee8b:refs/remotes/origin/main
+From https://github.com/yohanngusso/consultas-api-dr2-at
+ * [new ref]         20fe4a257332493bf9b691e9a0ff66f8d3a0ee8b -> origin/main
+[command]/usr/bin/git branch --list --remote origin/main
+  origin/main
+[command]/usr/bin/git rev-parse refs/remotes/origin/main
+20fe4a257332493bf9b691e9a0ff66f8d3a0ee8b
+##[endgroup]
+##[group]Determining the checkout info
+##[endgroup]
+[command]/usr/bin/git sparse-checkout disable
+[command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+##[group]Checking out the ref
+[command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+##[endgroup]
+[command]/usr/bin/git log -1 --format=%H
+20fe4a257332493bf9b691e9a0ff66f8d3a0ee8b
+##[group]Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+with:
+  python-version: 3.14
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+env:
+  PYTHON_VERSION: 3.14
+##[endgroup]
+##[group]Installed versions
+Successfully set up CPython (3.14.7)
+##[endgroup]
+##[group]Run actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+with:
+  path: relatorios
+  merge-multiple: false
+  repository: yohanngusso/consultas-api-dr2-at
+  run-id: 37166298281
+  skip-decompress: false
+  digest-mismatch: error
+env:
+  PYTHON_VERSION: 3.14
+  pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+##[endgroup]
+Found 4 artifact(s)
+No input name, artifact-ids or pattern filtered specified, downloading all artifacts
+An extra directory with the artifact name will be created for each download
+Preparing to download the following artifacts:
+- sca (ID: 11289661985, Size: 607, Expected Digest: sha256:d0a76c485bd3ed7f512564c5d4cb0fbfeb8afb6e0b2e2f6d85fe305f25555fc6)
+- testes (ID: 11289583315, Size: 3599, Expected Digest: sha256:5e4a78559d90595996dc2418f2bf9a38ebaf91a199a235ef8ec2331c8adc6f87)
+- sast (ID: 11289204121, Size: 3880, Expected Digest: sha256:efbd0eb50dd5f20da5b91de01351c70b290ef3ed40cbc488afc77507fa9928ec)
+- dast (ID: 11289114684, Size: 35625, Expected Digest: sha256:08c2bf2e711925987783e20967f2e91d57eff1ae45ed3c218c4bee41c21a0095)
+Redirecting to blob download url: https://productionresultssa18.blob.core.windows.net/actions-results/89547ed7-0c1c-8dee-9359-bf7640b6c273/workflow-job-run-c78ae3b3-1924-5354-ba27-050f983203c6/artifacts/3d7a633113667effb8048d14ac399b71fccffe3fb0ce2d3079e843767517a03d.zip
+Starting download of artifact to: /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/relatorios/sast
+Redirecting to blob download url: https://productionresultssa18.blob.core.windows.net/actions-results/89547ed7-0c1c-8dee-9359-bf7640b6c273/workflow-job-run-30f5410b-c939-56ea-b779-5e05c3668076/artifacts/19b88ce550d709f7d8f95b28f66a07716f182ca179c842e98b5e85d317aca8d3.zip
+Starting download of artifact to: /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/relatorios/testes
+Redirecting to blob download url: https://productionresultssa18.blob.core.windows.net/actions-results/89547ed7-0c1c-8dee-9359-bf7640b6c273/workflow-job-run-aef15b21-4dcd-55cb-9b66-b560a219cfe4/artifacts/bb4f803029873576f26891574315555c1b1242052a210e53b81471667dd53327.zip
+Starting download of artifact to: /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/relatorios/sca
+Redirecting to blob download url: https://productionresultssa18.blob.core.windows.net/actions-results/89547ed7-0c1c-8dee-9359-bf7640b6c273/workflow-job-run-c6b6693d-7f9e-5cf9-afd7-c03e88a2c61e/artifacts/9f86f162bec0db7baf77e2cb2055e7af287fd3a5a667ec0583b8d3486ec13c69.zip
+Starting download of artifact to: /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/relatorios/dast
+(node:1993) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+SHA256 digest of downloaded artifact is efbd0eb50dd5f20da5b91de01351c70b290ef3ed40cbc488afc77507fa9928ec
+Artifact download completed successfully.
+SHA256 digest of downloaded artifact is d0a76c485bd3ed7f512564c5d4cb0fbfeb8afb6e0b2e2f6d85fe305f25555fc6
+Artifact download completed successfully.
+SHA256 digest of downloaded artifact is 5e4a78559d90595996dc2418f2bf9a38ebaf91a199a235ef8ec2331c8adc6f87
+Artifact download completed successfully.
+SHA256 digest of downloaded artifact is 08c2bf2e711925987783e20967f2e91d57eff1ae45ed3c218c4bee41c21a0095
+Artifact download completed successfully.
+Total of 4 artifact(s) downloaded
+Download artifact has finished successfully
+##[group]Run python ci/security_gate.py \
+[36;1mpython ci/security_gate.py \[0m
+[36;1m  --bandit relatorios/sast/bandit.json \[0m
+[36;1m  --semgrep relatorios/sast/semgrep.json \[0m
+[36;1m  --pip-audit relatorios/sca/pip-audit.json \[0m
+[36;1m  --zap relatorios/dast/zap-web.json \[0m
+[36;1m  --zap relatorios/dast/zap-api.json[0m
+shell: /usr/bin/bash -e {0}
+env:
+  PYTHON_VERSION: 3.14
+  pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+##[endgroup]
+# Security gate
+
+Resultado: **APROVADO**. Achados: 18; bloqueantes: 0; exceções vigentes: 3.
+
+| Decisão | Ferramenta | Regra | Severidade | CWE | Local | Descrição |
+|---|---|---|---|---|---|---|
+| exceção | semgrep | avoid-sqlalchemy-text | ALTA | 89 | `app/routes/inseguro.py:44` | sqlalchemy.text passes the constructed SQL statement to the database mostly unchanged. This means that the usual SQL injection protections are not applied and t |
+| exceção | semgrep | detected-bcrypt-hash | ALTA | 798 | `app/seed.py:32` | bcrypt hash detected |
+| exceção | semgrep | detected-bcrypt-hash | ALTA | 798 | `app/seed.py:34` | bcrypt hash detected |
+| exceção | semgrep | detected-bcrypt-hash | ALTA | 798 | `app/seed.py:36` | bcrypt hash detected |
+| exceção | semgrep | detected-bcrypt-hash | ALTA | 798 | `app/seed.py:38` | bcrypt hash detected |
+| exceção | semgrep | detected-bcrypt-hash | ALTA | 798 | `app/seed.py:40` | bcrypt hash detected |
+| exceção | semgrep | detected-bcrypt-hash | ALTA | 798 | `app/seed.py:42` | bcrypt hash detected |
+| exceção | semgrep | detected-bcrypt-hash | ALTA | 798 | `app/seed.py:47` | bcrypt hash detected |
+| exceção | bandit | B608 | MEDIA | 89 | `app/routes/inseguro.py:43` | Possible SQL injection vector through string-based query construction. |
+| aviso | bandit | B107 | BAIXA | 259 | `app/routes/auth.py:16` | Possible hardcoded password: '' |
+| aviso | bandit | B105 | BAIXA | 259 | `app/routes/inseguro.py:69` | Possible hardcoded password: 'aud_demo' |
+| aviso | zap | 10096 | BAIXA | 497 | `http://localhost:8000/auth/eu (2 ocorrências)` | Timestamp Disclosure - Unix |
+| aviso | zap | 10049 | INFO | 524 | `http://localhost:8000/robots.txt (4 ocorrências)` | Non-Storable Content |
+| aviso | zap | 10112 | INFO | 1 | `http://localhost:8000/web/agenda (3 ocorrências)` | Session Management Response Identified |
+| aviso | zap | 10049 | INFO | 524 | `http://localhost:8000/static/agenda.css (1 ocorrências)` | Storable and Cacheable Content |
+| aviso | zap | 100000 | INFO | 388 | `http://localhost:8000/consultas/10 (13 ocorrências)` | A Client Error response code was returned by the server |
+| aviso | zap | 10111 | INFO | 1 | `http://localhost:8000/auth/token (1 ocorrências)` | Authentication Request Identified |
+| aviso | zap | 10049 | INFO | 524 | `http://localhost:8000/auth/eu (5 ocorrências)` | Non-Storable Content |
+
+Post job cleanup.
+Post job cleanup.
+[command]/usr/bin/git version
+git version 2.55.0
+Temporarily overriding HOME='/home/runner/work/_temp/f143691e-6e81-4a23-99eb-cf2ec60ba12d' before making global git config changes
+Adding repository directory to the temporary git global config as a safe directory
+[command]/usr/bin/git config --global --add safe.directory /home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at
+Removing SSH command configuration
+[command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+[command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Removing HTTP extra header
+[command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+[command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Removing includeIf entries pointing to credentials config files
+[command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+includeif.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git.path
+includeif.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git/worktrees/*.path
+includeif.gitdir:/github/workspace/.git.path
+includeif.gitdir:/github/workspace/.git/worktrees/*.path
+[command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git.path
+/home/runner/work/_temp/git-credentials-e91a8fc5-3af2-4c6a-823e-d2d0ccad2e68.config
+[command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-e91a8fc5\-3af2\-4c6a\-823e\-d2d0ccad2e68\.config
+[command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git/worktrees/*.path
+/home/runner/work/_temp/git-credentials-e91a8fc5-3af2-4c6a-823e-d2d0ccad2e68.config
+[command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/consultas-api-dr2-at/consultas-api-dr2-at/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-e91a8fc5\-3af2\-4c6a\-823e\-d2d0ccad2e68\.config
+[command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+/github/runner_temp/git-credentials-e91a8fc5-3af2-4c6a-823e-d2d0ccad2e68.config
+[command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-e91a8fc5\-3af2\-4c6a\-823e\-d2d0ccad2e68\.config
+[command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+/github/runner_temp/git-credentials-e91a8fc5-3af2-4c6a-823e-d2d0ccad2e68.config
+[command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-e91a8fc5\-3af2\-4c6a\-823e\-d2d0ccad2e68\.config
+[command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Removing credentials config '/home/runner/work/_temp/git-credentials-e91a8fc5-3af2-4c6a-823e-d2d0ccad2e68.config'
+Cleaning up orphan processes
