@@ -105,4 +105,4 @@ O workflow `.github/workflows/security.yml` roda SAST (Bandit, Semgrep), SCA (pi
 
 ## Documentação
 
-O relatório técnico `Yohann_Guedes_DR2_AT.pdf` traz uma seção por exercício, com as decisões de segurança, o threat model (após o Exercício 4) e o relatório de rastreabilidade do capstone (após o Exercício 13). As evidências citadas no relatório estão em `evidencias/`, e os diagramas em `docs/diagramas/`.
+O relatório técnico `Yohann_Guedes_DR2_AT.pdf` traz uma seção curta por exercício, com as decisões de segurança, o threat model (Exercício 4) e a rastreabilidade, os riscos residuais e o veredito do capstone (Exercício 13). As evidências citadas no relatório estão em `evidencias/`, e os diagramas em `docs/diagramas/`.
