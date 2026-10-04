@@ -1,0 +1,41 @@
+flowchart TB
+    subgraph EXT["Fronteira externa: clientes"]
+        U["Usuários<br/>(paciente, profissional,<br/>recepção, administrador)"]
+        LAB["Laboratório parceiro"]
+    end
+    subgraph BORDA["Fronteira de borda (P1)"]
+        P1["P1 Middlewares globais<br/>cabeçalhos, CORS allowlist,<br/>rate limiting"]
+        P2["P2 AutenticacaoJWTMiddleware<br/>decodifica e valida o JWT<br/>(fail-closed)"]
+    end
+    subgraph APP["Fronteira da aplicação"]
+        P3["P3 /auth<br/>bcrypt, MFA, bloqueio,<br/>emissão de JWT"]
+        P4["P4 Autorização<br/>escopos (RBAC) +<br/>exigir_posse (ownership)"]
+        P5["P5 Rotas JSON<br/>consultas, pacientes,<br/>profissionais, admin"]
+        P6["P6 Página da recepção<br/>Jinja2 com autoescape,<br/>cookie + CSRF"]
+        P7["P7 Integração do laboratório<br/>horários disponíveis"]
+        G["Guarda de posse<br/>(bloqueia 2xx sem verificação)"]
+    end
+    subgraph DADOS["Fronteira de dados"]
+        D1[("D1 Usuários e clientes M2M<br/>[hash bcrypt]")]
+        D2[("D2 Pacientes e consultas<br/>[CPF, motivo clínico]")]
+        D3[("D3 Trilha de auditoria")]
+        D4[/"D4 Segredos (.env / cofre)<br/>JWT secret, URL do banco"/]
+    end
+    U -- "HTTPS" --> P1
+    LAB -- "HTTPS" --> P1
+    P1 --> P2
+    P2 -- "rotas públicas: /auth/token, /auth/mfa, /web/login" --> P3
+    P3 -- "consulta credencial" --> D1
+    P3 -- "login sucesso/falha" --> D3
+    P2 -- "claims validadas" --> P4
+    P4 -- "decisão permitido/negado" --> D3
+    P4 --> P5
+    P4 --> P6
+    P4 --> P7
+    P5 -- "select() parametrizado [PII + saúde]" --> D2
+    P6 -- "agenda sem motivo [PII]" --> D2
+    P7 -- "ocupação da agenda, sem PII" --> D2
+    D4 -. "lido na inicialização" .-> P3
+    P5 --> G
+    classDef sensivel stroke:#b00020,stroke-width:2px
+    class D1,D2,D4 sensivel

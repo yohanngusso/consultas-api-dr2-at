@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Clínicas - Recepção{% endblock %}</title>
+    <link rel="stylesheet" href="/static/agenda.css">
+</head>
+<body>
+    <header>
+        <h1>Rede de Clínicas</h1>
+        <p>Sistema interno da recepção</p>
+        {% block acoes %}{% endblock %}
+    </header>
+    <main>
+        {% block conteudo %}{% endblock %}
+    </main>
+    <footer>
+        <p>Uso interno. Dados protegidos pela LGPD: não copie, fotografe ou compartilhe esta tela.</p>
+    </footer>
+</body>
+</html>

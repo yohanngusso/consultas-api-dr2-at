@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block titulo %}Agenda (versão vulnerável){% endblock %}
+
+{% block conteudo %}
+    <h2>Agenda do dia {{ dia.strftime('%d/%m/%Y') }}</h2>
+    <table>
+        <thead>
+            <tr><th>Horário</th><th>Paciente</th><th>Profissional</th><th>Motivo</th><th>Observações</th></tr>
+        </thead>
+        <tbody>
+        {% for c in consultas %}
+            <tr>
+                <td>{{ c.inicio.strftime('%H:%M') }}</td>
+                <td>{{ c.paciente_nome }}</td>
+                <td>{{ c.profissional_nome }}</td>
+                <td>{{ c.motivo }}</td>
+                <td>{{ c.observacoes|safe }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

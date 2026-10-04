@@ -1,0 +1,188 @@
+====================================================================================================
+EXERCÍCIO 6 - Autenticação OAuth2, bcrypt, JWT, MFA e autorização
+====================================================================================================
+
+Senha armazenada (bcrypt custo 12, sal embutido): $2b$12$Vl3JjiAI8TU9lkKrYO8efuPk2p6SL0KkiefsQXcTtcheB08sld93y
+
+> POST /auth/token
+> corpo (data): {"username": "helena@clinica.dev", "password": "SenhaHelena#2026"}
+< HTTP 200
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjb25zdWx0YXMtYXBpIiwic3ViIjoiMyIsImF1ZCI6ImNvbnN1bHRhcy1hcGkiLCJ0aXBvIjoidXN1YXJpbyIsInNjb3BlIjoiY29uc3VsdGFzOmxlciBjb25zdWx0YXM6ZXNjcmV2ZXIgcGFjaWVudGVzOmxlciBwcm9maXNzaW9uYWlzOmxlciIsImlhdCI6MTc5MTA3MzcyMiwiZXhwIjoxNzkxMDc0NjIyLCJqdGkiOiIwNjBjMDM3YWJiYjc0MGI4OGI1Y2Y2YjM0MzQyOTZjMCIsInBhcGVsIjoicHJvZmlzc2lvbmFsIiwiYW1yIjpbInB3ZCJdLCJtZmEiOmZhbHNlfQ.nA0yoU7T2Tydqfrferg7Km98AxPTUeXv7_CO5FGfZpE",
+  "token_type": "bearer",
+  "expires_in": 900,
+  "scope": "consultas:ler consultas:escrever pacientes:ler profissionais:ler"
+}
+
+Claims do token da profissional:
+{
+  "iss": "consultas-api",
+  "sub": "3",
+  "aud": "consultas-api",
+  "tipo": "usuario",
+  "scope": "consultas:ler consultas:escrever pacientes:ler profissionais:ler",
+  "iat": 1791073722,
+  "exp": 1791074622,
+  "jti": "20d4dd1748674081909c3845b8490d50",
+  "papel": "profissional",
+  "amr": [
+    "pwd"
+  ],
+  "mfa": false
+}
+
+Administrador: a senha sozinha devolve um desafio, não um token.
+
+> POST /auth/token
+> corpo (data): {"username": "admin@clinica.dev", "password": "SenhaAdmin#2026"}
+< HTTP 200
+{
+  "mfa_required": true,
+  "challenge_id": "QerOHOd454lC_Va4bBqnEkaF5rhIFxAk",
+  "metodo": "totp_simulado",
+  "detalhe": "Conta administrativa exige segundo fator. Envie o código de 6 dígitos em POST /auth/mfa (válido por 5 minutos)."
+}
+
+Código entregue pelo canal simulado (log do servidor): 200229
+
+> POST /auth/mfa
+> corpo (json): {"challenge_id": "QerOHOd454lC_Va4bBqnEkaF5rhIFxAk", "codigo": "000000"}
+< HTTP 401
+{
+  "detail": "Desafio de MFA inválido, expirado ou já utilizado"
+}
+
+> POST /auth/mfa
+> corpo (json): {"challenge_id": "QerOHOd454lC_Va4bBqnEkaF5rhIFxAk", "codigo": "200229"}
+< HTTP 200
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjb25zdWx0YXMtYXBpIiwic3ViIjoiMSIsImF1ZCI6ImNvbnN1bHRhcy1hcGkiLCJ0aXBvIjoidXN1YXJpbyIsInNjb3BlIjoiY29uc3VsdGFzOmxlciBjb25zdWx0YXM6ZXNjcmV2ZXIgYWdlbmRhOmxlciBwYWNpZW50ZXM6bGVyIHBhY2llbnRlczpjcmlhciBwcm9maXNzaW9uYWlzOmxlciBhZG1pbiIsImlhdCI6MTc5MTA3MzcyMywiZXhwIjoxNzkxMDc0NjIzLCJqdGkiOiJhNGY0ZGM1ZWIwZmU0ZmZlYjRkMGFkOTE0YmFmZWU1MCIsInBhcGVsIjoiYWRtaW5pc3RyYWRvciIsImFtciI6WyJwd2QiLCJvdHAiXSwibWZhIjp0cnVlfQ.tKfgLy12ERjWT8YgpnQDKNkhC23GbH9uqDkxf_2APO4",
+  "token_type": "bearer",
+  "expires_in": 900,
+  "scope": "consultas:ler consultas:escrever agenda:ler pacientes:ler pacientes:criar profissionais:ler admin"
+}
+
+Claims do token do administrador (amr com otp, mfa=true):
+{
+  "iss": "consultas-api",
+  "sub": "1",
+  "aud": "consultas-api",
+  "tipo": "usuario",
+  "scope": "consultas:ler consultas:escrever agenda:ler pacientes:ler pacientes:criar profissionais:ler admin",
+  "iat": 1791073723,
+  "exp": 1791074623,
+  "jti": "a4f4dc5eb0fe4ffeb4d0ad914bafee50",
+  "papel": "administrador",
+  "amr": [
+    "pwd",
+    "otp"
+  ],
+  "mfa": true
+}
+
+Rota administrativa: profissional, recepcionista e paciente recebem 403; administrador com MFA recebe 200.
+
+> GET /admin/usuarios
+> Authorization: Bearer <token Dra. Helena>
+< HTTP 403
+{
+  "detail": "Escopo insuficiente: a operação exige admin"
+}
+
+> GET /admin/usuarios
+> Authorization: Bearer <token Recepção>
+< HTTP 403
+{
+  "detail": "Escopo insuficiente: a operação exige admin"
+}
+
+> GET /admin/usuarios
+> Authorization: Bearer <token paciente João>
+< HTTP 403
+{
+  "detail": "Escopo insuficiente: a operação exige admin"
+}
+
+> GET /admin/usuarios
+> Authorization: Bearer <token admin com MFA>
+< HTTP 200
+[
+  {
+    "id": 1,
+    "nome": "Administração",
+    "email": "admin@clinica.dev",
+    "papel": "administrador",
+    "ativo": true,
+    "mfa_obrigatorio": true
+  },
+  {
+    "id": 2,
+    "nome": "Renata Lopes",
+    "email": "recepcao@clinica.dev",
+    "papel": "recepcionista",
+    "ativo": true,
+    "mfa_obrigatorio": false
+  },
+  {
+    "id": 3,
+    "nome": "Dra. Helena Prado",
+    "email": "helena@clinica.dev",
+    "papel": "profissional",
+    "ativo": true,
+    "mfa_obrigatorio": false
+  },
+  {
+    "id": 4,
+    "nome": "Dr. Marcos Teixeira",
+    "email": "marcos@clinica.dev",
+    "papel": "profissional",
+    "ativo": true,
+    "mfa_obrigatorio": false
+  },
+  {
+    "id": 5,
+    "nome": "João Batista",
+    "email": "joao@paciente.dev",
+    "papel": "paciente",
+    "ativo": true,
+    "mfa_obrigatorio": false
+  },
+  {
+    "id": 6,
+    "nome": "Maria Fernandes",
+    "email": "maria@paciente.dev",
+    "papel": "paciente",
+    "ativo": true,
+    "mfa_obrigatorio": false
+  }
+]
+
+Ownership: a profissional gerencia só consultas dos próprios pacientes.
+
+> POST /consultas
+> Authorization: Bearer <token Dra. Helena>
+> corpo (json): {"paciente_id": 2, "inicio": "2026-10-04T16:00:00", "motivo": "Paciente de outro profissional"}
+< HTTP 403
+{
+  "detail": "Paciente não está sob sua responsabilidade"
+}
+
+> PUT /consultas/2
+> Authorization: Bearer <token Dra. Helena>
+> corpo (json): {"inicio": "2026-10-04T16:00:00", "duracao_minutos": 30, "status": "cancelada", "motivo": "Tentativa"}
+< HTTP 403
+{
+  "detail": "Acesso negado a este recurso"
+}
+
+$ python -m pytest tests/test_autorizacao.py -k t03 -v
+============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\faculdade\infnet\3_ano_2026\2_Semestre_2026\3_trimestre_2026\Desenvolvimento Seguro de Aplicações Web\AT
+configfile: pytest.ini
+plugins: anyio-4.15.1, platformdirs-4.12.2
+collected 51 items / 43 deselected / 8 selected
+
+tests\test_autorizacao.py ........                                       [100%]
+
+====================== 8 passed, 43 deselected in 2.71s =======================

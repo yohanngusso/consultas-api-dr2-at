@@ -1,0 +1,175 @@
+name: pipeline-de-seguranca
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seguranca-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.14"
+
+jobs:
+  sast:
+    name: SAST (Bandit e Semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Bandit
+        run: |
+          pip install bandit==1.9.4
+          bandit -r app main.py ci -f json -o bandit.json || true
+      - name: Semgrep
+        run: |
+          docker run --rm -v "$PWD:/src" -w /src semgrep/semgrep@sha256:32e459968daabe7ab86968184a29109b9564aa00392401156f9788452b42786b semgrep scan \
+            --config p/python --config p/owasp-top-ten --config p/secrets --config p/jwt \
+            --exclude venv --exclude evidencias --exclude tests \
+            --json --output semgrep.json --metrics off --quiet || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sast
+          path: |
+            bandit.json
+            semgrep.json
+
+  sca:
+    name: SCA (pip-audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: pip-audit
+        run: |
+          pip install pip-audit==2.10.1
+          pip-audit -r requirements.txt -f json -o pip-audit.json --progress-spinner off || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sca
+          path: pip-audit.json
+
+  testes:
+    name: Testes de segurança e auditoria OpenAPI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - name: pytest
+        run: python -m pytest --junitxml=pytest.xml
+      - name: Auditoria da especificação OpenAPI
+        run: |
+          export CLINICA_JWT_SECRET="$(python -c 'import secrets; print(secrets.token_urlsafe(48))')"
+          python ci/auditar_openapi.py --saida auditoria-openapi.md
+      - if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: testes
+          path: |
+            pytest.xml
+            auditoria-openapi.md
+
+  dast:
+    name: DAST (ZAP passivo em homologação efêmera)
+    needs: testes
+    runs-on: ubuntu-latest
+    env:
+      CLINICA_DATABASE_URL: sqlite:///./homologacao.db
+      CLINICA_CARREGAR_DADOS_DEMONSTRACAO: "true"
+      CLINICA_COOKIE_SEGURO: "false"
+      CLINICA_CORS_ORIGENS: https://app.clinicas.exemplo.dev
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Sobe a aplicação
+        run: |
+          SEGREDO="$(python -c 'import secrets; print(secrets.token_urlsafe(48))')"
+          echo "::add-mask::$SEGREDO"
+          CLINICA_JWT_SECRET="$SEGREDO" nohup uvicorn main:app --host 0.0.0.0 --port 8000 --no-server-header > uvicorn.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:8000/ && break; sleep 1; done
+      - name: Autentica os perfis usados no scan
+        env:
+          DAST_PROFISSIONAL_EMAIL: ${{ secrets.DAST_PROFISSIONAL_EMAIL }}
+          DAST_PROFISSIONAL_SENHA: ${{ secrets.DAST_PROFISSIONAL_SENHA }}
+          DAST_RECEPCAO_EMAIL: ${{ secrets.DAST_RECEPCAO_EMAIL }}
+          DAST_RECEPCAO_SENHA: ${{ secrets.DAST_RECEPCAO_SENHA }}
+        run: |
+          curl -s -o token.json -X POST http://localhost:8000/auth/token \
+            --data-urlencode "username=$DAST_PROFISSIONAL_EMAIL" --data-urlencode "password=$DAST_PROFISSIONAL_SENHA"
+          TOKEN=$(python -c "import json; print(json.load(open('token.json'))['access_token'])")
+          rm token.json
+          CSRF=$(curl -s -c cj http://localhost:8000/web/login | grep -o 'name="csrf_token" value="[^"]*"' | sed 's/.*value="//;s/"//')
+          SESSAO=$(curl -s -i -b cj -X POST http://localhost:8000/web/login \
+            --data-urlencode "email=$DAST_RECEPCAO_EMAIL" --data-urlencode "senha=$DAST_RECEPCAO_SENHA" \
+            --data-urlencode "csrf_token=$CSRF" | grep -i "set-cookie: sessao_clinica" | sed 's/.*sessao_clinica=\([^;]*\).*/\1/')
+          echo "::add-mask::$TOKEN"
+          echo "::add-mask::$SESSAO"
+          echo "ZAP_TOKEN=$TOKEN" >> "$GITHUB_ENV"
+          echo "ZAP_SESSAO=$SESSAO" >> "$GITHUB_ENV"
+      - name: ZAP baseline na página da recepção
+        run: |
+          mkdir -p zap && cp .zap/rules.tsv zap/ && chmod -R 777 zap
+          docker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" \
+            -e ZAP_AUTH_HEADER=Cookie -e "ZAP_AUTH_HEADER_VALUE=sessao_clinica=$ZAP_SESSAO" \
+            zaproxy/zap-stable@sha256:781a2bdaea47324e7bab583e2263f21d257b0aee61ed51521a5be45f5f5081ef zap-baseline.py -t http://localhost:8000/web/agenda -m 2 -c rules.tsv \
+            -J zap-web.json -r zap-web.html || true
+      - name: ZAP API scan em modo seguro (somente passivo)
+        run: |
+          docker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" \
+            -e ZAP_AUTH_HEADER=Authorization -e "ZAP_AUTH_HEADER_VALUE=Bearer $ZAP_TOKEN" \
+            zaproxy/zap-stable@sha256:781a2bdaea47324e7bab583e2263f21d257b0aee61ed51521a5be45f5f5081ef zap-api-scan.py -t http://localhost:8000/openapi.json -f openapi -S -c rules.tsv \
+            -J zap-api.json -r zap-api.html || true
+      - if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dast
+          path: |
+            zap/zap-*.json
+            zap/zap-*.html
+
+  security-gate:
+    name: Security gate
+    needs: [sast, sca, testes, dast]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: relatorios
+      - name: Etapas obrigatórias concluídas
+        if: needs.testes.result != 'success' || needs.sast.result != 'success' || needs.sca.result != 'success' || needs.dast.result != 'success'
+        run: |
+          echo "Uma etapa obrigatória falhou ou não rodou; o pipeline não pode ser aprovado."
+          exit 1
+      - name: Aplica o critério de severidade
+        run: |
+          python ci/security_gate.py \
+            --bandit relatorios/sast/bandit.json \
+            --semgrep relatorios/sast/semgrep.json \
+            --pip-audit relatorios/sca/pip-audit.json \
+            --zap relatorios/dast/zap-web.json \
+            --zap relatorios/dast/zap-api.json

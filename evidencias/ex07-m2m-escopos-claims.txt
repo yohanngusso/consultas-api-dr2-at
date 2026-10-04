@@ -1,0 +1,196 @@
+====================================================================================================
+EXERCÍCIO 7 - Fluxo client_credentials do laboratório, escopos e claims
+====================================================================================================
+
+> POST /auth/token
+> corpo (data): {"grant_type": "client_credentials", "client_id": "laboratorio-parceiro", "client_secret": "segredo-errado"}
+< HTTP 401
+{
+  "detail": "client_id ou client_secret inválidos"
+}
+
+O laboratório pede escopos além do contrato: o servidor concede só a interseção.
+
+> POST /auth/token
+> corpo (data): {"grant_type": "client_credentials", "client_id": "laboratorio-parceiro", "client_secret": "e784ad17f9385f8f221db15796c5bff8", "scope": "horarios:ler consultas:ler pacientes:ler admin"}
+< HTTP 200
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjb25zdWx0YXMtYXBpIiwic3ViIjoibGFib3JhdG9yaW8tcGFyY2Vpcm8iLCJhdWQiOiJjb25zdWx0YXMtYXBpOmxhYm9yYXRvcmlvIiwidGlwbyI6InNlcnZpY28iLCJzY29wZSI6ImhvcmFyaW9zOmxlciIsImlhdCI6MTc5MTA3MzcyOCwiZXhwIjoxNzkxMDc0MzI4LCJqdGkiOiJiYjZlMWVmODE1MjU0Y2FmODYzZGQ2MDU2ZTJmMjRjZiIsImNpZCI6ImxhYm9yYXRvcmlvLXBhcmNlaXJvIiwicGFyY2Vpcm8iOiJMYWJvcmF0XHUwMGYzcmlvIEFuXHUwMGUxbGlzZXMgVmlkYSIsInBhcGVsIjoicGFyY2Vpcm8ifQ.oORMiH4Y6t3Ab5HrE2JZMsHG8AYdLikwHJIngdnIt7g",
+  "token_type": "bearer",
+  "expires_in": 600,
+  "scope": "horarios:ler"
+}
+
+> POST /auth/token
+> corpo (data): {"grant_type": "client_credentials", "client_id": "laboratorio-parceiro", "client_secret": "e784ad17f9385f8f221db15796c5bff8", "scope": "consultas:ler"}
+< HTTP 400
+{
+  "detail": "Nenhum dos escopos solicitados está previsto no contrato deste cliente"
+}
+
+Claims lado a lado:
+  amr      laboratório = "-"                                           profissional = ["pwd"]
+  aud      laboratório = "consultas-api:laboratorio"                   profissional = "consultas-api"
+  cid      laboratório = "laboratorio-parceiro"                        profissional = "-"
+  exp      laboratório = 1791074328                                    profissional = 1791074629
+  iat      laboratório = 1791073728                                    profissional = 1791073729
+  iss      laboratório = "consultas-api"                               profissional = "consultas-api"
+  jti      laboratório = "bb6e1ef815254caf863dd6056e2f24cf"            profissional = "e74ebc1b80854105810fd00ab876d35a"
+  mfa      laboratório = "-"                                           profissional = false
+  papel    laboratório = "parceiro"                                    profissional = "profissional"
+  parceiro laboratório = "Laboratório Análises Vida"                   profissional = "-"
+  scope    laboratório = "horarios:ler"                                profissional = "consultas:ler consultas:escrever pacientes:ler profissionais:ler"
+  sub      laboratório = "laboratorio-parceiro"                        profissional = "3"
+  tipo     laboratório = "servico"                                     profissional = "usuario"
+
+> GET /laboratorio/horarios-disponiveis?data=2026-10-04&especialidade=cardiologia
+> Authorization: Bearer <token laboratorio>
+< HTTP 200
+[
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T07:00:00",
+    "fim": "2026-10-04T07:30:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T07:30:00",
+    "fim": "2026-10-04T08:00:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T08:00:00",
+    "fim": "2026-10-04T08:30:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T08:30:00",
+    "fim": "2026-10-04T09:00:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T09:00:00",
+    "fim": "2026-10-04T09:30:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T09:30:00",
+    "fim": "2026-10-04T10:00:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T10:00:00",
+    "fim": "2026-10-04T10:30:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T10:30:00",
+    "fim": "2026-10-04T11:00:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T11:30:00",
+    "fim": "2026-10-04T12:00:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T12:00:00",
+    "fim": "2026-10-04T12:30:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T12:30:00",
+    "fim": "2026-10-04T13:00:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T13:00:00",
+    "fim": "2026-10-04T13:30:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T13:30:00",
+    "fim": "2026-10-04T14:00:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T14:00:00",
+    "fim": "2026-10-04T14:30:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T14:30:00",
+    "fim": "2026-10-04T15:00:00"
+  },
+  {
+    "profissional_id": 1,
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "inicio": "2026-10-04T15:00:00",
+    "fim": "2026-10-04T15:30:00"
+  },
+  {
+  
+... (truncado)
+
+O mesmo token tentando alcançar dados de pacientes:
+
+> GET /consultas
+> Authorization: Bearer <token laboratorio>
+< HTTP 403
+{
+  "detail": "Escopo insuficiente: a operação exige consultas:ler"
+}
+
+> GET /consultas/1
+> Authorization: Bearer <token laboratorio>
+< HTTP 403
+{
+  "detail": "Escopo insuficiente: a operação exige consultas:ler"
+}
+
+> GET /pacientes/1
+> Authorization: Bearer <token laboratorio>
+< HTTP 403
+{
+  "detail": "Escopo insuficiente: a operação exige pacientes:ler"
+}
+
+O token da profissional não serve na rota do laboratório:
+
+> GET /laboratorio/horarios-disponiveis?data=2026-10-04&especialidade=cardiologia
+> Authorization: Bearer <token Dra. Helena>
+< HTTP 403
+{
+  "detail": "Escopo insuficiente: a operação exige horarios:ler"
+}

@@ -1,0 +1,67 @@
+====================================================================================================
+EXERCÍCIO 10 - CORS, cabeçalhos de segurança e rate limiting
+====================================================================================================
+
+> GET /
+< HTTP 200
+< strict-transport-security: max-age=31536000; includeSubDomains
+< x-frame-options: DENY
+< x-content-type-options: nosniff
+< referrer-policy: no-referrer
+< content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'
+< cache-control: no-store
+< permissions-policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+< cross-origin-opener-policy: same-origin
+< cross-origin-resource-policy: same-origin
+< cross-origin-embedder-policy: require-corp
+{
+  "servico": "consultas-api",
+  "status": "ok"
+}
+
+> GET /rota-inexistente
+< HTTP 401
+< strict-transport-security: max-age=31536000; includeSubDomains
+< x-frame-options: DENY
+< x-content-type-options: nosniff
+{
+  "detail": "Autenticação necessária"
+}
+
+Preflight CORS de uma origem da allowlist e de uma origem desconhecida:
+
+> OPTIONS /consultas
+> Origin: http://localhost:5173
+> Access-Control-Request-Method: GET
+> Access-Control-Request-Headers: Authorization
+< HTTP 200
+< access-control-allow-origin: http://localhost:5173
+< access-control-allow-credentials: true
+< access-control-allow-methods: GET, POST, PUT, DELETE
+OK
+
+> OPTIONS /consultas
+> Origin: https://atacante.exemplo
+> Access-Control-Request-Method: GET
+> Access-Control-Request-Headers: Authorization
+< HTTP 400
+< access-control-allow-origin: <ausente>
+Disallowed CORS origin
+
+$ python -c "Configuracoes(cors_origens='*', ...)"
+ValidationError Value error, CORS com wildcard não é permitido: informe as origens em CLINICA_CORS_ORIGENS. [type=value_error, input_value='*', input_type=str]
+
+Força bruta no login (limite de 5/min por IP):
+  tentativa 1: HTTP 401 E-mail ou senha inválidos
+  tentativa 2: HTTP 401 E-mail ou senha inválidos
+  tentativa 3: HTTP 401 E-mail ou senha inválidos
+  tentativa 4: HTTP 401 E-mail ou senha inválidos
+  tentativa 5: HTTP 401 E-mail ou senha inválidos
+  tentativa 6: HTTP 429 Muitas requisições. Aguarde antes de tentar novamente. (Retry-After: 60)
+  tentativa 7: HTTP 429 Muitas requisições. Aguarde antes de tentar novamente. (Retry-After: 60)
+
+Leitura no mesmo intervalo segue liberada (limite próprio de 60/min):
+  20 x GET / -> [200]
+
+Bloqueio por identidade: depois de 5 falhas a conta fica bloqueada mesmo com a senha certa e com o contador por IP zerado.
+  senha correta após o bloqueio: HTTP 429 Muitas tentativas inválidas para esta conta. Tente novamente mais tarde.

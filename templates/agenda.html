@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block titulo %}Agenda de {{ dia.strftime('%d/%m/%Y') }} - Recepção{% endblock %}
+
+{% block acoes %}
+    <form method="post" action="/web/logout" class="sair">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <span>{{ usuario }}</span>
+        <button type="submit">Sair</button>
+    </form>
+{% endblock %}
+
+{% block conteudo %}
+    <h2>Agenda do dia {{ dia.strftime('%d/%m/%Y') }}</h2>
+    {% if consultas %}
+        <table>
+            <thead>
+                <tr><th>Horário</th><th>Paciente</th><th>Profissional</th><th>Especialidade</th><th>Status</th><th>Observações</th></tr>
+            </thead>
+            <tbody>
+            {% for c in consultas %}
+                <tr>
+                    <td>{{ c.inicio.strftime('%H:%M') }}</td>
+                    <td>{{ c.paciente_nome }}</td>
+                    <td>{{ c.profissional_nome }}</td>
+                    <td>{{ c.especialidade.value }}</td>
+                    <td>{{ c.status.value }}</td>
+                    <td>{{ c.observacoes }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhuma consulta agendada para este dia.</p>
+    {% endif %}
+{% endblock %}

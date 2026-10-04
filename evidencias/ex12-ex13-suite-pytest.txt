@@ -1,0 +1,22 @@
+====================================================================================================
+EXERCÍCIOS 12 e 13 - Suíte completa de testes
+====================================================================================================
+
+$ python -m pytest -v
+============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\faculdade\infnet\3_ano_2026\2_Semestre_2026\3_trimestre_2026\Desenvolvimento Seguro de Aplicações Web\AT
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.15.1, platformdirs-4.12.2
+collected 174 items
+
+tests\test_autorizacao.py .............................................. [ 26%]
+.....                                                                    [ 29%]
+tests\test_cabecalhos_e_limites.py .......................               [ 42%]
+tests\test_consultas.py ........                                         [ 47%]
+tests\test_entrada.py ..........................................         [ 71%]
+tests\test_unitarios_mock.py ........................................... [ 95%]
+.......                                                                  [100%]
+
+============================ 174 passed in 45.34s =============================

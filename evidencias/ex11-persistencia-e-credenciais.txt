@@ -1,0 +1,27 @@
+====================================================================================================
+EXERCÍCIO 11 - SQLModel, queries parametrizadas, sessão por dependência e credenciais fora do código
+====================================================================================================
+
+SQL efetivamente enviado ao SQLite pelo repositório, chamado direto com payloads (sem a whitelist na frente):
+
+  SELECT paciente.id, paciente.nome, paciente.cpf, paciente.data_nascimento, paciente.email, paciente.telefone, paciente.profissional_responsavel_id FROM paciente WHERE (paciente.nome LIKE '%' || ? || '%' ESCAPE '/') ORDER BY paciente.nome
+  parâmetros ligados: ("' OR '1'='1",)
+
+  SELECT usuario.id, usuario.nome, usuario.email, usuario.papel, usuario.senha_hash, usuario.mfa_obrigatorio, usuario.ativo, usuario.profissional_id, usuario.paciente_id FROM usuario WHERE usuario.email = ?
+  parâmetros ligados: ("admin@clinica.dev' --",)
+
+Resultado: a busca devolveu 0 pacientes e o login encontrou nenhum usuário; o payload foi comparado como texto literal.
+
+Configuração:
+
+$ python -c "Configuracoes()"  # sem CLINICA_JWT_SECRET
+ValidationError - jwt_secret Field required [type=missing, input_value={'database_url': 'sqlite:...racao_insegura': 'true'}, input_type=dict]
+
+$ python -c "print(repr(Configuracoes(...).jwt_secret))"
+SecretStr('**********')
+database_url = sqlite:///./clinica_evidencias.db
+
+Atribuições de segredo no código-fonte e no .env.example (regex (SECRET|SENHA|PASSWORD)\s*=):
+  app/routes/auth.py:27: self.password = password
+  app/routes/auth.py:30: self.client_secret = client_secret
+  .env.example:10: CLINICA_JWT_SECRET=

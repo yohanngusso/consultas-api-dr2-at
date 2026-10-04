@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    participant P as Profissional
+    participant A as Administrador
+    participant L as Laboratório
+    participant API as consultas-api
+    P->>API: POST /auth/token (grant_type=password)
+    API-->>P: JWT aud=consultas-api, tipo=usuario, papel=profissional, scope=consultas:*
+    A->>API: POST /auth/token (grant_type=password)
+    API-->>A: desafio MFA (sem token)
+    A->>API: POST /auth/mfa (challenge_id, código)
+    API-->>A: JWT papel=administrador, amr=[pwd, otp], mfa=true
+    L->>API: POST /auth/token (grant_type=client_credentials, scope=horarios:ler consultas:ler)
+    API-->>L: JWT aud=consultas-api:laboratorio, tipo=servico, scope=horarios:ler (recortado pelo contrato)
+    L->>API: GET /laboratorio/horarios-disponiveis
+    API-->>L: 200 horários livres, sem dado de paciente
+    L->>API: GET /consultas
+    API-->>L: 403 escopo insuficiente

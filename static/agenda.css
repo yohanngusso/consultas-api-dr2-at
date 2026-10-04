@@ -1,0 +1,13 @@
+body { font-family: Arial, Helvetica, sans-serif; margin: 2rem; color: #1f2933; }
+header { border-bottom: 2px solid #1f4e79; padding-bottom: 0.5rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: 1rem; }
+header h1 { margin: 0; color: #1f4e79; }
+header p { margin: 0; color: #52606d; }
+footer { border-top: 1px solid #cbd2d9; margin-top: 2rem; padding-top: 0.5rem; font-size: 0.85rem; color: #616e7c; }
+table { border-collapse: collapse; margin-top: 1rem; width: 100%; max-width: 70rem; }
+th, td { border: 1px solid #cbd2d9; padding: 0.5rem 0.75rem; text-align: left; vertical-align: top; }
+th { background: #e4e7eb; }
+form { display: grid; gap: 0.4rem; max-width: 20rem; }
+form.sair { display: flex; gap: 0.5rem; align-items: center; margin-left: auto; max-width: none; }
+input { padding: 0.4rem; }
+button { padding: 0.4rem 0.8rem; cursor: pointer; }
+.erro { color: #ab091e; font-weight: bold; }

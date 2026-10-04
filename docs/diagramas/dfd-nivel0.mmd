@@ -1,0 +1,30 @@
+flowchart LR
+    subgraph TB1["Fronteira 1: Internet (não confiável)"]
+        PAC["Paciente<br/>(frontend)"]
+        PRO["Profissional de saúde<br/>(frontend)"]
+        ADM["Administrador<br/>(frontend + MFA)"]
+    end
+    subgraph TB2["Fronteira 2: Rede interna da clínica"]
+        REC["Recepção<br/>(navegador)"]
+    end
+    subgraph TB3["Fronteira 3: Parceiro externo"]
+        LAB["Laboratório parceiro<br/>(sistema M2M)"]
+    end
+    subgraph TB4["Fronteira 4: Aplicação"]
+        API(("consultas-api"))
+    end
+    subgraph TB5["Fronteira 5: Dados"]
+        DB[("Banco relacional<br/>pacientes, consultas,<br/>usuários, auditoria")]
+    end
+    PAC -- "credenciais / JWT<br/>[dado de saúde do titular]" --> API
+    PRO -- "JWT + consultas<br/>[dado de saúde]" --> API
+    ADM -- "JWT com amr=otp" --> API
+    REC -- "cookie de sessão + CSRF<br/>[agenda sem motivo clínico]" --> API
+    LAB -- "client_credentials<br/>[somente horários]" --> API
+    API -- "SQL parametrizado<br/>[PII + saúde]" --> DB
+    API -- "JSON / HTML" --> PAC
+    API -- "JSON" --> PRO
+    API -- "HTML com autoescape" --> REC
+    API -- "horários livres, sem PII" --> LAB
+    classDef sensivel stroke:#b00020,stroke-width:2px
+    class DB,API sensivel

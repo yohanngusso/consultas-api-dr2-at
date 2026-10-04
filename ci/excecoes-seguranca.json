@@ -1,0 +1,26 @@
+[
+  {
+    "ferramenta": "semgrep",
+    "identificador": "detected-bcrypt-hash",
+    "arquivo": "app/seed.py",
+    "justificativa": "Hashes bcrypt (custo 12) das contas de avaliação do Assessment. O módulo só é executado com CLINICA_CARREGAR_DADOS_DEMONSTRACAO=true, cujo padrão é false; a carga é proibida em produção pelo checklist de deploy.",
+    "aprovado_por": "Yohann Guedes",
+    "expira_em": "2026-12-31"
+  },
+  {
+    "ferramenta": "semgrep",
+    "identificador": "avoid-sqlalchemy-text",
+    "arquivo": "app/routes/inseguro.py",
+    "justificativa": "SQL injection proposital do Exercício 8, preservado para reproduzir o antes e depois. O router só é montado com CLINICA_MODO_DEMONSTRACAO_INSEGURA=true e deve ser removido do artefato de produção.",
+    "aprovado_por": "Yohann Guedes",
+    "expira_em": "2026-12-31"
+  },
+  {
+    "ferramenta": "bandit",
+    "identificador": "B608",
+    "arquivo": "app/routes/inseguro.py",
+    "justificativa": "Mesmo trecho da exceção anterior, detectado pelo Bandit.",
+    "aprovado_por": "Yohann Guedes",
+    "expira_em": "2026-12-31"
+  }
+]
