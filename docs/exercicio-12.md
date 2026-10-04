@@ -91,8 +91,11 @@ O projeto está no repositório privado `yohanngusso/consultas-api-dr2-at`. Os q
 | 37166298281 | push na `main` (commit inicial) | Todos os jobs verdes em 3m32s; gate APROVADO com 18 achados, 0 bloqueantes e 3 exceções | Pipeline completo rodando no GitHub com o mesmo resultado da execução local: 174 testes, OpenAPI sem achados, ZAP autenticado sem falhas |
 | 37166685255 | push na `main` (Dependabot) | Verde | `.github/dependabot.yml` passa a abrir PRs semanais para pip e para as actions fixadas por SHA; cada PR do Dependabot passa pelo mesmo pipeline |
 | 37166747797 | pull request #1 | Testes, SAST, SCA e DAST verdes; **gate BLOQUEADO** | PR de demonstração com `buscar_paciente_por_cpf` montando SQL por f-string em `app/database.py`. Os testes passam porque a função não é usada; quem barra é o gate: Semgrep `avoid-sqlalchemy-text` (alta) e Bandit B608 (médio, mas CWE-89). A exceção de `app/routes/inseguro.py` não cobre o arquivo novo. PR fechado sem merge |
+| 37167023629 | push na `main` (evidências) | Verde em 4m17s | Pipeline segue aprovado depois da inclusão das evidências |
 
 ![Execução aprovada na main](../evidencias/tela-07-github-actions-main-aprovado.png)
+
+![Histórico de execuções: main sempre verde, PR #1 vermelho e as varreduras do Dependabot](../evidencias/tela-08-github-actions-historico-execucoes.png)
 
 O PR #1 mostra o motivo de o gate ser um job separado: um pipeline que só rodasse testes teria aprovado a mudança.
 
