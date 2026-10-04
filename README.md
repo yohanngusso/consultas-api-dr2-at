@@ -65,7 +65,7 @@ tests/                      174 testes pytest
 ci/                         security gate, auditoria OpenAPI, exceções
 .github/workflows/          pipeline DevSecOps
 .zap/rules.tsv              regras do ZAP
-docs/                       um arquivo por exercício, threat model e relatório de rastreabilidade
+docs/diagramas/             DFD níveis 0 e 1, partições e fluxos OAuth (PNG)
 evidencias/                 saídas de requisições, telas, relatórios do pipeline e do ZAP
 ```
 
@@ -105,20 +105,4 @@ O workflow `.github/workflows/security.yml` roda SAST (Bandit, Semgrep), SCA (pi
 
 ## Documentação
 
-| Exercício | Arquivo |
-|---|---|
-| 1 Fundação | [docs/exercicio-01.md](docs/exercicio-01.md) |
-| 2 Exposição de dados e templates | [docs/exercicio-02.md](docs/exercicio-02.md) |
-| 3 CIA, frameworks e DFD | [docs/exercicio-03.md](docs/exercicio-03.md) |
-| 4 STRIDE e threat model | [docs/exercicio-04.md](docs/exercicio-04.md), [docs/threat-model.md](docs/threat-model.md) |
-| 5 Arquitetura e vetores | [docs/exercicio-05.md](docs/exercicio-05.md) |
-| 6 Autenticação e autorização | [docs/exercicio-06.md](docs/exercicio-06.md) |
-| 7 Escopos e M2M | [docs/exercicio-07.md](docs/exercicio-07.md) |
-| 8 Identificação OWASP | [docs/exercicio-08.md](docs/exercicio-08.md) |
-| 9 Correções de entrada e saída | [docs/exercicio-09.md](docs/exercicio-09.md) |
-| 10 Hardening | [docs/exercicio-10.md](docs/exercicio-10.md) |
-| 11 Persistência | [docs/exercicio-11.md](docs/exercicio-11.md) |
-| 12 Pipeline DevSecOps | [docs/exercicio-12.md](docs/exercicio-12.md) |
-| 13 Capstone | [docs/exercicio-13.md](docs/exercicio-13.md), [docs/relatorio-rastreabilidade.md](docs/relatorio-rastreabilidade.md) |
-
-O relatório técnico consolidado é o `Yohann_Guedes_DR2_AT.pdf`.
+O relatório técnico `Yohann_Guedes_DR2_AT.pdf` traz uma seção por exercício, com as decisões de segurança, o threat model (após o Exercício 4) e o relatório de rastreabilidade do capstone (após o Exercício 13). As evidências citadas no relatório estão em `evidencias/`, e os diagramas em `docs/diagramas/`.
