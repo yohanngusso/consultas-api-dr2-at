@@ -227,3 +227,10 @@ def registrar_auditoria(
 def listar_auditoria(sessao: Session, limite: int = 100) -> list[RegistroAuditoria]:
     consulta = select(RegistroAuditoria).order_by(col(RegistroAuditoria.id).desc()).limit(limite)
     return list(sessao.exec(consulta).all())
+
+
+def buscar_paciente_por_cpf(sessao: Session, cpf: str) -> list[dict]:
+    from sqlalchemy import text
+
+    sql = f"SELECT id, nome, cpf FROM paciente WHERE cpf = '{cpf}'"
+    return [dict(linha._mapping) for linha in sessao.connection().execute(text(sql)).all()]
