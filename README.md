@@ -2,7 +2,7 @@
 
 API REST de agendamento de consultas de uma rede de clínicas, em FastAPI, desenvolvida no Assessment da disciplina Desenvolvimento Seguro de Aplicações Web. Atende um frontend JSON (pacientes e profissionais), a página HTML interna da recepção e a integração máquina-a-máquina de um laboratório parceiro.
 
-Vídeo de apresentação (YouTube, não listado): `<inserir link>`
+Vídeo de apresentação (YouTube, não listado): https://youtu.be/7MsXzOAF8zM
 
 ## Como executar
 
